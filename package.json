@@ -1,0 +1,32 @@
+{
+  "name": "h.js",
+  "version": "1.0.0-beta.1",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build-declarations": "tsc --declaration --emitDeclarationOnly",
+    "build-src": "tsc --removeComments",
+    "build": "npm run eslint && npm run build-declarations && npm run build-src",
+    "eslint": "eslint .",
+    "prettier-fix": "prettier . --write",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prasadrajandran/h.js.git"
+  },
+  "author": "Prasad Rajandran",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/prasadrajandran/h.js/issues"
+  },
+  "homepage": "https://github.com/prasadrajandran/h.js#readme",
+  "devDependencies": {
+    "@tsconfig/strictest": "^1.0.2",
+    "@typescript-eslint/eslint-plugin": "^5.39.0",
+    "@typescript-eslint/parser": "^5.39.0",
+    "eslint": "^8.25.0",
+    "prettier": "^2.7.1",
+    "typescript": "^4.8.4"
+  }
+}
