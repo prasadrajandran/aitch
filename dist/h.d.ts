@@ -12,12 +12,10 @@ interface ElementDetails<T extends HTMLElement> {
     attrs?: Record<AttrNameKebabCase, AttrValue>;
     dataAttrs?: Record<DataAttrNameCamelCase, AttrValue>;
     ariaAttrs?: Record<AttrNameKebabCase, AttrValue>;
-    namespaceUri?: string;
-    elementOptions?: ElementCreationOptions;
-    ref?: (el: T) => void;
+    ref?: (element: T) => void;
 }
 /**
- * Create an HTML/SVG Element.
+ * Create an HTML Element.
  *
  * @param elementHeader Element header definition E.g. 'div',
  *   'div class="class"', etc.
