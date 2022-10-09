@@ -1,21 +1,22 @@
 {
-  "name": "h.js",
+  "name": "h-js",
   "version": "1.0.0-beta.1",
   "description": "Easily generate HTML and CSS using JavaScript",
   "keywords": [
+    "h.js",
     "css",
     "html",
     "looping",
     "css-in-js",
     "html-templating"
   ],
-  "homepage": "https://github.com/prasadrajandran/h.js#readme",
+  "homepage": "https://github.com/prasadrajandran/h-js#readme",
   "bugs": {
-    "url": "https://github.com/prasadrajandran/h.js/issues"
+    "url": "https://github.com/prasadrajandran/h-js/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/prasadrajandran/h.js.git"
+    "url": "git+https://github.com/prasadrajandran/h-js.git"
   },
   "license": "MIT",
   "author": "Prasad Rajandran",
