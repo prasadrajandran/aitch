@@ -1,5 +1,5 @@
 {
-  "name": "h.js",
+  "name": "h",
   "version": "1.0.0-beta.1",
   "description": "Easily generate HTML and CSS using JavaScript",
   "keywords": [
@@ -9,13 +9,13 @@
     "css-in-js",
     "html-templating"
   ],
-  "homepage": "https://github.com/prasadrajandran/h.js#readme",
+  "homepage": "https://github.com/prasadrajandran/h#readme",
   "bugs": {
-    "url": "https://github.com/prasadrajandran/h.js/issues"
+    "url": "https://github.com/prasadrajandran/h/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/prasadrajandran/h.js.git"
+    "url": "git+https://github.com/prasadrajandran/h.git"
   },
   "license": "MIT",
   "author": "Prasad Rajandran",
