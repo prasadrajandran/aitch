@@ -4,7 +4,9 @@ Create HTML and/or CSS in JavaScript.
 
 ## Installation
 
-TODO
+```
+npm install @prasadrajandran/h-js
+```
 
 ## Why Would I Use This Instead of JSX?
 
