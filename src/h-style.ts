@@ -7,8 +7,6 @@ type StyleRules = {
  * @param rules Style rules.
  */
 export const hStyle = (rules: StyleRules) => {
-  const styleElement = document.createElement('style');
-
   const parser = (rules: StyleRules) => {
     return Object.entries(rules).map(([selector, styles]) => {
       const cssText = Object.entries(styles).reduce((items, [name, value]) => {
@@ -24,8 +22,5 @@ export const hStyle = (rules: StyleRules) => {
       return `${selector}{${cssText}}`;
     });
   };
-
-  styleElement.innerHTML = parser(rules).join('');
-
-  document.head.append(styleElement);
+  return parser(rules).join('');
 };
