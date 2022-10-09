@@ -1,4 +1,4 @@
-# h
+# h.js
 
 Create HTML and/or CSS in JavaScript.
 
@@ -15,7 +15,7 @@ Maybe you're bored?
 ### h()
 
 ```javascript
-import { h } from '@prasadrajandran/h';
+import { h } from '@prasadrajandran/h.js';
 
 // Equivalent to document.createElement('p');
 const p = h('p');
@@ -71,7 +71,7 @@ const p = h(
 ### hRepeat()
 
 ```javascript
-import { h, hRepeat } from '@prasadrajandran/h';
+import { h, hRepeat } from '@prasadrajandran/h.js';
 
 const items = [
   {
@@ -115,7 +115,7 @@ hRepeat({
 ### hStyle()
 
 ```javascript
-import { hStyle } from '@prasadrajandran/h';
+import { hStyle } from '@prasadrajandran/h.js';
 
 // Create styles
 const selector = 'div:hover';
