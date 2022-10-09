@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../src/h-style.ts"],
+  "sourcesContent": ["type StyleRules = {\n  [selector: string]: Partial<CSSStyleDeclaration> | StyleRules;\n};\n\n/**\n * Add CSS style sheet rules.\n * @param rules Style rules.\n */\nexport const hStyle = (rules: StyleRules) => {\n  const parser = (rules: StyleRules) => {\n    return Object.entries(rules).map(([selector, styles]) => {\n      const cssText = Object.entries(styles).reduce((items, [name, value]) => {\n        if (typeof value === 'string') {\n          const snakeCasedName = name.replace(\n            /[A-Z]/g,\n            (c) => `-${c.toLowerCase()}`\n          );\n          return (items += `${snakeCasedName}:${value};`);\n        }\n        return parser(styles as StyleRules).join('');\n      }, '') as string;\n      return `${selector}{${cssText}}`;\n    });\n  };\n  return parser(rules).join('');\n};\n"],
+  "mappings": "AAQO,MAAMA,EAAUC,GAAsB,CAC3C,MAAMC,EAAUD,GACP,OAAO,QAAQA,CAAK,EAAE,IAAI,CAAC,CAACE,EAAUC,CAAM,IAAM,CACvD,MAAMC,EAAU,OAAO,QAAQD,CAAM,EAAE,OAAO,CAACE,EAAO,CAACC,EAAMC,CAAK,IAC5D,OAAOA,GAAU,SAKXF,GAAS,GAJMC,EAAK,QAC1B,SACCE,GAAM,IAAIA,EAAE,YAAY,GAC3B,KACsCD,KAEjCN,EAAOE,CAAoB,EAAE,KAAK,EAAE,EAC1C,EAAE,EACL,MAAO,GAAGD,KAAYE,IACxB,CAAC,EAEH,OAAOH,EAAOD,CAAK,EAAE,KAAK,EAAE,CAC9B",
+  "names": ["hStyle", "rules", "parser", "selector", "styles", "cssText", "items", "name", "value", "c"]
+}

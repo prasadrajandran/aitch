@@ -1,11 +1,12 @@
 {
   "name": "h.js",
   "version": "1.0.0-beta.1",
-  "description": "",
+  "description": "Easily create HTML and CSS in JavaScript",
   "main": "dist/index.js",
   "scripts": {
-    "build-src": "tsc --declaration",
-    "build": "npm run eslint && npm run build-src && npm run prettier-fix && npm test",
+    "build-dts": "tsc --declaration --emitDeclarationOnly",
+    "build-src": "node ./build.js",
+    "build": "npm run eslint && npm run build-src && npm run build-dts && npm test",
     "eslint": "eslint .",
     "prettier-fix": "prettier . --write",
     "test": "jest"
@@ -28,6 +29,7 @@
     "@typescript-eslint/eslint-plugin": "^5.39.0",
     "@typescript-eslint/parser": "^5.39.0",
     "babel-jest": "^29.1.2",
+    "esbuild": "^0.15.10",
     "eslint": "^8.25.0",
     "jest": "^29.1.2",
     "jest-environment-jsdom": "^29.1.2",

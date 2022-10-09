@@ -6,6 +6,7 @@ module.exports = {
     '.eslintrc.cjs',
     'jest.config.js',
     'babel.config.js',
+    'build.js',
     'dist/',
     '*.test.js',
   ],
