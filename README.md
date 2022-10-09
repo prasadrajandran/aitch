@@ -68,6 +68,50 @@ const p = h(
 );
 ```
 
+### hRepeat()
+
+```javascript
+import { h, hRepeat } from '@prasadrajandran/h.js';
+
+const items = [
+  {
+    id: 'A-01',
+    name: 'John',
+  },
+  {
+    id: 'Q-22',
+    name: 'Michael',
+  },
+];
+
+const container = h('div');
+hRepeat({
+  // Required: Container that houses the items.
+  container,
+  // Required: Items to iterate over. Can be an array, map, set, or plain
+  // object.
+  items,
+  // Required: Callback that generates the template for each iteration.
+  element: ({ key, item: { id, name }, index }) => {
+    return h('p', id, h('br'), name);
+  },
+  // Optional: Callback that gets called on each item.
+  ref: ({ key, item, index, element }) => {},
+  // Optional: Options
+  opts: {
+    // The value returned by this callback will be used to uniquely identify
+    // each item. If not set, it will use the array index, map key, set's
+    // index order (like an array), or plain object's key. This value MUST BE
+    // UNIQUE. It is strongly recommended that this be set to something other
+    // than the array/set's indices.
+    key: ({ key, item, index }) => item.id,
+    // Name of attribute that hStyle() will query to decide if the element
+    // needs to be removed the next time hStyle() is called.
+    keyAttrName: 'data-key', // Default is 'data-h-repeat-key'
+  },
+});
+```
+
 ### hStyle()
 
 ```javascript
