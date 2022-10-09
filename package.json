@@ -21,6 +21,9 @@
   "license": "MIT",
   "author": "Prasad Rajandran",
   "main": "dist/index.js",
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "build": "npm run eslint && npm run check-types && npm run build-src && npm run build-dts && npm test",
     "build-dts": "tsc --declaration --emitDeclarationOnly",
