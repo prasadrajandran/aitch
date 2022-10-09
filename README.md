@@ -67,3 +67,58 @@ const p = h(
   'this'
 );
 ```
+
+### style()
+
+```javascript
+import { hStyle } from '@prasadrajandran/h.js';
+
+// Create styles
+const selector = 'div:hover';
+const style = document.createElement('style');
+style.innerHTML = hStyle({
+  p: {
+    fontSize: '10px',
+    fontWeight: 'bold',
+  },
+  'p > button': {
+    color: 'blue',
+  },
+  [selector]: {
+    color: 'yellow',
+  },
+  [`
+    p > button,
+    div > span
+  `]: {
+    display: 'absolute',
+  },
+});
+document.head.appendChild(style);
+
+// Create media queries
+hStyle({
+  '@media (height: 360px)': {
+    div: {
+      fontSize: '10px',
+    },
+    p: {
+      display: 'flex',
+      flexDirection: 'column',
+      fontSize: '10px',
+    },
+  },
+});
+
+// Create animation keyframes
+hStyle({
+  '@keyframes slideIn': {
+    from: {
+      transform: 'translateX(0%)',
+    },
+    to: {
+      transform: 'translateX(100%)',
+    },
+  },
+});
+```
