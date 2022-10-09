@@ -53,6 +53,7 @@ export const h = <T extends HTMLElement>(
     ? {}
     : elementDetails || {};
 
+  // TODO: either use regex /\s/ or innerHTML...  RUN trim()?
   const elementName = elementHeader.split(' ')[0] as string;
 
   const el: T = namespaceUri

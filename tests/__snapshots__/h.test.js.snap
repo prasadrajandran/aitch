@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`h() Attrs set via the second argument take precedence over attrs set via the first argument 1`] = `
+<div>
+  <div
+    role="button"
+    style="font-size: 20px; display: absolute;"
+  >
+    Label!
+  </div>
+</div>
+`;
+
+exports[`h() Parses element name 1`] = `
+<div>
+  <p />
+</div>
+`;
+
+exports[`h() Parses element name and attributes as a single argument 1`] = `
+<div>
+  <div
+    aria-label="cta"
+    class="btn btn-primary"
+    id="btn"
+    style="font-size: 10px; display: absolute"
+    tabindex="0"
+  />
+</div>
+`;
+
+exports[`h() Second argument can be a node instead of attributes 1`] = `
+<div>
+  <p>
+    something
+    <br />
+    <span
+      style="font-weight: bold;"
+    >
+      else
+    </span>
+  </p>
+</div>
+`;
+
+exports[`h() Second argument can be used to apply attrs using JS 1`] = `
+<div>
+  <div
+    class="btn btn-primary"
+    data-expected-pattern="[a-z]"
+    id="mybtn"
+    role="button"
+    style="font-size: 10px; display: absolute; flex-direction: column;"
+  >
+    Label!
+  </div>
+</div>
+`;

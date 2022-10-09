@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`hStyle() Parses a single block 1`] = `
+"div {
+  font-size: 10px;
+}
+"
+`;
+
+exports[`hStyle() Parses animation keyframes 1`] = `
+"@keyframes slideIn {
+  from {
+    transform: translateX(0%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+"
+`;
+
+exports[`hStyle() Parses block with multiple selectors 1`] = `
+"div,
+p {
+  font-size: 10px;
+  display: flex;
+  flex-direction: column;
+  font-family: "Bungee Shade", system-ui;
+}
+"
+`;
+
+exports[`hStyle() Parses blocks under a media query 1`] = `
+"@media (height: 360px) {
+  div {
+    font-size: 10px;
+  }
+  p {
+    display: flex;
+    flex-direction: column;
+    font-size: 10px;
+  }
+}
+"
+`;
+
+exports[`hStyle() Parses empty object 1`] = `""`;
+
+exports[`hStyle() Parses multiple blocks 1`] = `
+"div {
+  font-size: 10px;
+}
+p {
+  display: flex;
+  flex-direction: column;
+  font-size: 10px;
+  font-family: "Bungee Shade", system-ui;
+}
+"
+`;
