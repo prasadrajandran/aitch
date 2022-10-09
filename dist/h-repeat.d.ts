@@ -17,8 +17,7 @@ interface HRepeatRefCallback<ITEM, ELEMENT> {
 }
 interface HRepeatOptions<ITEM> {
     key?: HRepeatKeyCallback<ITEM>;
-    reset?: boolean;
-    idAttrName?: string;
+    keyAttrName?: string;
 }
 interface HRepeatParams<ITEM, ELEMENT extends HTMLElement> {
     container: HTMLElement;
@@ -30,5 +29,5 @@ interface HRepeatParams<ITEM, ELEMENT extends HTMLElement> {
 /**
  * Render a collection of nodes.
  */
-export declare const hRepeat: <ITEM, ELEMENT extends HTMLElement>({ container, items, element: elementCallback, ref, opts: { key, reset, idAttrName }, }: HRepeatParams<ITEM, ELEMENT>) => void;
+export declare const hRepeat: <ITEM, ELEMENT extends HTMLElement>({ container, items, element: elementCallback, ref, opts, }: HRepeatParams<ITEM, ELEMENT>) => void;
 export {};

@@ -23,8 +23,7 @@ interface HRepeatRefCallback<ITEM, ELEMENT> {
 
 interface HRepeatOptions<ITEM> {
   key?: HRepeatKeyCallback<ITEM>;
-  reset?: boolean;
-  idAttrName?: string;
+  keyAttrName?: string;
 }
 
 interface HRepeatParams<ITEM, ELEMENT extends HTMLElement> {
@@ -43,9 +42,9 @@ export const hRepeat = <ITEM, ELEMENT extends HTMLElement>({
   items,
   element: elementCallback,
   ref,
-  opts: { key, reset, idAttrName } = {},
+  opts = {},
 }: HRepeatParams<ITEM, ELEMENT>) => {
-  const keyAttrName = idAttrName || `data-h-repeat-id`;
+  const keyAttrName = opts.keyAttrName || `data-h-repeat-key`;
 
   const getItems = (items: unknown) => {
     if (items instanceof Map || items instanceof Set) {
@@ -54,7 +53,7 @@ export const hRepeat = <ITEM, ELEMENT extends HTMLElement>({
     return Object.entries(items as Record<string, unknown>);
   };
 
-  const getKeyValue = key || (({ key }: { key: string }) => key);
+  const getKeyValue = opts.key || (({ key }: { key: string }) => key);
 
   const keyValues = new Set();
 
@@ -66,7 +65,7 @@ export const hRepeat = <ITEM, ELEMENT extends HTMLElement>({
     let element = container.querySelector<ELEMENT>(
       `[${keyAttrName}="${keyValue}"]`
     );
-    if (!reset && !element) {
+    if (!element) {
       element = elementCallback({ key, item, index });
       element.setAttribute(keyAttrName, keyValue);
       container.append(element);
