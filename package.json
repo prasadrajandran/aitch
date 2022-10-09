@@ -4,9 +4,10 @@
   "description": "Easily create HTML and CSS in JavaScript",
   "main": "dist/index.js",
   "scripts": {
+    "check-types": "tsc --noEmit",
     "build-dts": "tsc --declaration --emitDeclarationOnly",
     "build-src": "node ./build.js",
-    "build": "npm run eslint && npm run build-src && npm run build-dts && npm test",
+    "build": "npm run eslint && npm run check-types && npm run build-src && npm run build-dts && npm test",
     "eslint": "eslint .",
     "prettier-fix": "prettier . --write",
     "test": "jest"
