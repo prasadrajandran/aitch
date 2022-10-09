@@ -77,18 +77,18 @@ describe('h()', () => {
 
   test('Applying events', () => {
     const onclick = jest.fn(() => {});
-    const onbeforecopy = () => {};
+    const onabort = () => {};
     let elementRef = null;
 
     h('button', {
-      events: { onclick, onbeforecopy },
+      events: { onclick, onabort },
       ref: (btn) => (elementRef = btn),
     });
 
     expect(elementRef.onclick).toEqual(onclick);
-    expect(elementRef.onclick).not.toEqual(onbeforecopy);
-    expect(elementRef.onbeforecopy).toEqual(onbeforecopy);
-    expect(elementRef.onbeforecopy).not.toEqual(onclick);
+    expect(elementRef.onclick).not.toEqual(onabort);
+    expect(elementRef.onabort).toEqual(onabort);
+    expect(elementRef.onabort).not.toEqual(onclick);
 
     expect(onclick).toBeCalledTimes(0);
     elementRef.click();

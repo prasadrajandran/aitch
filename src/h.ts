@@ -18,13 +18,11 @@ interface ElementDetails<T extends HTMLElement> {
   attrs?: Record<AttrNameKebabCase, AttrValue>;
   dataAttrs?: Record<DataAttrNameCamelCase, AttrValue>;
   ariaAttrs?: Record<AttrNameKebabCase, AttrValue>;
-  namespaceUri?: string;
-  elementOptions?: ElementCreationOptions;
-  ref?: (el: T) => void;
+  ref?: (element: T) => void;
 }
 
 /**
- * Create an HTML/SVG Element.
+ * Create an HTML Element.
  *
  * @param elementHeader Element header definition E.g. 'div',
  *   'div class="class"', etc.
@@ -44,8 +42,6 @@ export const h = <T extends HTMLElement>(
     events = {},
     dataAttrs = {},
     ariaAttrs = {},
-    namespaceUri = undefined,
-    elementOptions = undefined,
     ref = () => {
       /* Do nothing */
     },
@@ -53,63 +49,57 @@ export const h = <T extends HTMLElement>(
     ? {}
     : elementDetails || {};
 
-  // TODO: either use regex /\s/ or innerHTML...  RUN trim()?
-  const elementName = elementHeader.split(' ')[0] as string;
+  const parser = document.createElement('div');
+  parser.innerHTML = `<${elementHeader}/>`;
+  const element = parser.firstElementChild as T;
 
-  const el: T = namespaceUri
-    ? (document.createElementNS(namespaceUri, elementName, elementOptions) as T)
-    : (document.createElement(elementName, elementOptions) as T);
-
-  const attrParser = document.createElement('div');
-  attrParser.innerHTML = `<${elementHeader}/>`;
-
-  if (attrParser.firstElementChild) {
-    const attrs = attrParser.firstElementChild.attributes;
-    for (let i = 0; i < attrs.length; i++) {
-      const { name, value } = attrs[i] as Attr;
-      el.setAttribute(name, value);
-    }
+  if (!element || element instanceof HTMLUnknownElement) {
+    throw new Error(`"${elementHeader}" is invalid`);
   }
 
   for (const [styleName, styleValue] of Object.entries(style)) {
     // Note: Do not use "style.setProperty" because "styleName" is in camelCase.
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    el.style[styleName] = styleValue;
+    element.style[styleName] = styleValue;
   }
 
   if (className) {
-    el.classList.add(...className.split(' '));
+    element.classList.add(...className.split(' '));
   }
 
   if (id) {
-    el.setAttribute('id', id);
+    element.setAttribute('id', id);
   }
 
   for (const [attrName, attrValue] of Object.entries(attrs)) {
-    el.setAttribute(attrName, String(attrValue));
+    element.setAttribute(attrName, String(attrValue));
   }
 
   for (const [dataAttrName, dataAttrValue] of Object.entries(dataAttrs)) {
-    el.dataset[dataAttrName] = String(dataAttrValue);
+    element.dataset[dataAttrName] = String(dataAttrValue);
   }
 
   for (const [ariaAttrName, ariaAttrValue] of Object.entries(ariaAttrs)) {
-    el.setAttribute(`aria-${ariaAttrName}`, String(ariaAttrValue));
+    element.setAttribute(`aria-${ariaAttrName}`, String(ariaAttrValue));
   }
 
   for (const [eventName, eventHandler] of Object.entries(events)) {
-    // eslint-disable-next-line
-    // @ts-ignore
-    el[eventName] = eventHandler;
+    if (eventName in element) {
+      // eslint-disable-next-line
+      // @ts-ignore
+      element[eventName] = eventHandler;
+    } else {
+      throw new Error(`"${eventName}" does not exist on "${element.nodeName}"`);
+    }
   }
 
   if (elementDetails instanceof Node || typeof elementDetails === 'string') {
-    el.append(elementDetails);
+    element.append(elementDetails);
   }
-  el.append(...nodes);
+  element.append(...nodes);
 
-  ref(el);
+  ref(element);
 
-  return el;
+  return element;
 };
