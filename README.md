@@ -68,7 +68,7 @@ const p = h(
 );
 ```
 
-### style()
+### hStyle()
 
 ```javascript
 import { hStyle } from '@prasadrajandran/h.js';
