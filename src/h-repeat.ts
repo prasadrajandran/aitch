@@ -1,5 +1,5 @@
 interface HRepeatElementCallbackParams<ITEM> {
-  key: string;
+  key: unknown;
   item: ITEM;
   index: number;
 }
@@ -26,9 +26,13 @@ interface HRepeatOptions<ITEM> {
   keyAttrName?: string;
 }
 
-interface HRepeatParams<ITEM, ELEMENT extends HTMLElement> {
+interface HRepeatParams<ITEM, ELEMENT extends Element> {
   container: HTMLElement;
-  items: unknown;
+  items:
+    | Map<unknown, ITEM>
+    | Set<ITEM>
+    | ITEM[]
+    | Record<string | number | symbol, ITEM>;
   element: HRepeatElementCallback<ITEM, ELEMENT>;
   ref?: HRepeatRefCallback<ITEM, ELEMENT>;
   opts?: HRepeatOptions<ITEM>;
@@ -37,7 +41,7 @@ interface HRepeatParams<ITEM, ELEMENT extends HTMLElement> {
 /**
  * Render a collection of nodes.
  */
-export const hRepeat = <ITEM, ELEMENT extends HTMLElement>({
+export const hRepeat = <ITEM, ELEMENT extends Element>({
   container,
   items,
   element: elementCallback,
@@ -46,21 +50,22 @@ export const hRepeat = <ITEM, ELEMENT extends HTMLElement>({
 }: HRepeatParams<ITEM, ELEMENT>) => {
   const keyAttrName = opts.keyAttrName || `data-h-repeat-key`;
 
-  const getItems = (items: unknown) => {
-    if (items instanceof Map || items instanceof Set) {
-      return items;
-    }
-    return Object.entries(items as Record<string, unknown>);
-  };
+  const getKeyValue = opts.key || (({ key }) => key);
 
-  const getKeyValue = opts.key || (({ key }: { key: string }) => key);
+  const entries = Array.isArray(items)
+    ? items.entries()
+    : items instanceof Map
+    ? items
+    : items instanceof Set
+    ? Array.from(items).entries()
+    : Object.entries(items);
 
-  const keyValues = new Set();
+  const savedKeys = new Set<string>();
 
   let index = 0;
-  for (const [key, item] of getItems(items)) {
-    const keyValue = getKeyValue({ key, item, index });
-    keyValues.add(keyValue);
+  for (const [key, item] of entries) {
+    const keyValue = String(getKeyValue({ key, item, index }));
+    savedKeys.add(keyValue);
 
     let element = container.querySelector<ELEMENT>(
       `[${keyAttrName}="${keyValue}"]`
@@ -79,7 +84,7 @@ export const hRepeat = <ITEM, ELEMENT extends HTMLElement>({
   }
 
   container.querySelectorAll(`[${keyAttrName}]`).forEach((element) => {
-    if (!keyValues.has(element.getAttribute(keyAttrName))) {
+    if (!savedKeys.has(element.getAttribute(keyAttrName) as string)) {
       element.remove();
     }
   });
