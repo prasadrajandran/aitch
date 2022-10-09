@@ -1,5 +1,5 @@
 interface HRepeatElementCallbackParams<ITEM> {
-    key: string;
+    key: unknown;
     item: ITEM;
     index: number;
 }
@@ -19,9 +19,9 @@ interface HRepeatOptions<ITEM> {
     key?: HRepeatKeyCallback<ITEM>;
     keyAttrName?: string;
 }
-interface HRepeatParams<ITEM, ELEMENT extends HTMLElement> {
+interface HRepeatParams<ITEM, ELEMENT extends Element> {
     container: HTMLElement;
-    items: unknown;
+    items: Map<unknown, ITEM> | Set<ITEM> | ITEM[] | Record<string | number | symbol, ITEM>;
     element: HRepeatElementCallback<ITEM, ELEMENT>;
     ref?: HRepeatRefCallback<ITEM, ELEMENT>;
     opts?: HRepeatOptions<ITEM>;
@@ -29,5 +29,5 @@ interface HRepeatParams<ITEM, ELEMENT extends HTMLElement> {
 /**
  * Render a collection of nodes.
  */
-export declare const hRepeat: <ITEM, ELEMENT extends HTMLElement>({ container, items, element: elementCallback, ref, opts, }: HRepeatParams<ITEM, ELEMENT>) => void;
+export declare const hRepeat: <ITEM, ELEMENT extends Element>({ container, items, element: elementCallback, ref, opts, }: HRepeatParams<ITEM, ELEMENT>) => void;
 export {};
