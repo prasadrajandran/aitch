@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`h() Attrs set via the second argument take precedence over attrs set via the first argument 1`] = `
+exports[`h() Snapshots Attrs set via the second argument take precedence over attrs set via the first argument 1`] = `
 <div>
   <div
     role="button"
@@ -11,13 +11,13 @@ exports[`h() Attrs set via the second argument take precedence over attrs set vi
 </div>
 `;
 
-exports[`h() Parses element name 1`] = `
+exports[`h() Snapshots Parses element name 1`] = `
 <div>
   <p />
 </div>
 `;
 
-exports[`h() Parses element name and attributes as a single argument 1`] = `
+exports[`h() Snapshots Parses element name and attributes as a single argument 1`] = `
 <div>
   <div
     aria-label="cta"
@@ -29,7 +29,16 @@ exports[`h() Parses element name and attributes as a single argument 1`] = `
 </div>
 `;
 
-exports[`h() Second argument can be a node instead of attributes 1`] = `
+exports[`h() Snapshots Parses element name/attrs inside backticks 1`] = `
+<div
+  class="btn btn-primary"
+  style="font-size: 25px;"
+>
+  <p />
+</div>
+`;
+
+exports[`h() Snapshots Second argument can be a node instead of attributes 1`] = `
 <div>
   <p>
     something
@@ -43,7 +52,7 @@ exports[`h() Second argument can be a node instead of attributes 1`] = `
 </div>
 `;
 
-exports[`h() Second argument can be used to apply attrs using JS 1`] = `
+exports[`h() Snapshots Second argument can be used to apply attrs using JS 1`] = `
 <div>
   <div
     class="btn btn-primary"
