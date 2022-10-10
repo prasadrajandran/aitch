@@ -31,26 +31,28 @@ const div = h(`div class="${className}"`);
 // Apply attributes/event handlers using JS
 const div = h('div', {
   class: 'btn btn-primary',
-  id: '',
-  events: {
-    onclick: () => console.info('clicked!'),
+  id: 'main-btn',
+  // Anything that starts with "on" is assumed to be an event handler
+  onclick: () => console.info('clicked!'),
+  role: 'button',
+  // This is a shorthand for style properties. Technically, style could be
+  // defined like this "style: 'font-size: 2px'", but this allows you to define
+  // as object properties in camel case.
+  $style: {
+    fontSize: '25px',
   },
-  // Notes:
-  // - must be in kebab case
-  // - technically could be used to apply "class", "id", or any attribute
-  //   (except events!) but the others are provided as shortcuts.
-  attrs: {
-    role: 'button',
-  },
-  // Note: camel case
-  dataAttrs: {
+  // Like $style, this is a shorthand for "data" attributes. The properties are
+  // expected to be in camel case. This property could also have been defined
+  // like this: "'data-registration-id': 'x-al'".
+  $data: {
     registrationId: 'x-a1', // this gets applied as "data-registration-id"
   },
-  // Note: kebab case
-  ariaAttrs: {
+  // Like $data, this is a shorthand for "aria" attributes. The properties are
+  // expected to be in kebab case.
+  $aria: {
     label: 'main section', // this would get applied as "aria-label"
   },
-  ref: (el) => {
+  $ref: (el) => {
     // callback to reference the element after it has been created
   },
 });
@@ -61,7 +63,7 @@ const p = h('p', 'something', h('br'), 'like', h('br'), 'this');
 // Note that the second argument could be attributes/events or a node
 const p = h(
   'p',
-  { events: { onclick: () => console.info('clicked!') } },
+  { onclick: () => console.info('clicked!') },
   'something',
   h('br'),
   'like',
