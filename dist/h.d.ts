@@ -2,18 +2,14 @@ declare type ElementHeader = string;
 declare type AttrNameKebabCase = string;
 declare type AttrValue = string | number | boolean;
 declare type DataAttrNameCamelCase = string;
-declare type EventHandlerName = string;
 declare type HChildNode = Node | string;
-interface ElementDetails<T extends HTMLElement> {
-    style?: Partial<CSSStyleDeclaration>;
-    class?: string;
-    id?: string;
-    events?: Record<EventHandlerName, (evt: Event) => unknown>;
-    attrs?: Record<AttrNameKebabCase, AttrValue>;
-    dataAttrs?: Record<DataAttrNameCamelCase, AttrValue>;
-    ariaAttrs?: Record<AttrNameKebabCase, AttrValue>;
-    ref?: (element: T) => void;
-}
+declare type ElementDetails<T extends HTMLElement> = {
+    $style?: Partial<CSSStyleDeclaration>;
+    $data?: Record<DataAttrNameCamelCase, AttrValue>;
+    $aria?: Record<AttrNameKebabCase, AttrValue>;
+    $ref?: (element: T) => void;
+    [attr: string]: unknown;
+};
 /**
  * Create an HTML Element.
  *

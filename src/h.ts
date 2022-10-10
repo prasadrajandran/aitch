@@ -6,20 +6,15 @@ type AttrValue = string | number | boolean;
 
 type DataAttrNameCamelCase = string;
 
-type EventHandlerName = string;
-
 type HChildNode = Node | string;
 
-interface ElementDetails<T extends HTMLElement> {
-  style?: Partial<CSSStyleDeclaration>;
-  class?: string;
-  id?: string;
-  events?: Record<EventHandlerName, (evt: Event) => unknown>;
-  attrs?: Record<AttrNameKebabCase, AttrValue>;
-  dataAttrs?: Record<DataAttrNameCamelCase, AttrValue>;
-  ariaAttrs?: Record<AttrNameKebabCase, AttrValue>;
-  ref?: (element: T) => void;
-}
+type ElementDetails<T extends HTMLElement> = {
+  $style?: Partial<CSSStyleDeclaration>;
+  $data?: Record<DataAttrNameCamelCase, AttrValue>;
+  $aria?: Record<AttrNameKebabCase, AttrValue>;
+  $ref?: (element: T) => void;
+  [attr: string]: unknown;
+};
 
 /**
  * Create an HTML Element.
@@ -35,62 +30,105 @@ export const h = <T extends HTMLElement>(
   ...nodes: HChildNode[]
 ): T => {
   const {
-    style = {},
-    attrs = {},
-    class: className = undefined,
+    class: className = '',
     id = '',
-    events = {},
-    dataAttrs = {},
-    ariaAttrs = {},
-    ref = () => {
+    $style = {},
+    $data = {},
+    $aria = {},
+    $ref = () => {
       /* Do nothing */
     },
+    ...attrs
   } = elementDetails instanceof Node || typeof elementDetails === 'string'
     ? {}
     : elementDetails || {};
 
   const parser = document.createElement('div');
-  parser.innerHTML = `<${elementHeader}/>`;
+  parser.innerHTML = `<${(elementHeader || '').trim()}/>`;
   const element = parser.firstElementChild as T;
 
   if (!element || element instanceof HTMLUnknownElement) {
-    throw new Error(`"${elementHeader}" is invalid`);
+    throw new Error(`First argument to h() is invalid: "${elementHeader}"`);
   }
 
-  for (const [styleName, styleValue] of Object.entries(style)) {
-    // Note: Do not use "style.setProperty" because "styleName" is in camelCase.
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    element.style[styleName] = styleValue;
+  if (element.childNodes.length) {
+    throw new Error(
+      'First argument to h() should not contain more than one element: ' +
+        parser.innerHTML
+    );
+  }
+
+  for (const [styleName, styleValue] of Object.entries($style)) {
+    if (typeof styleValue === 'string') {
+      // Note: Do not use "style.setProperty" because "styleName" is in
+      // camelCase.
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      element.style[styleName] = styleValue;
+    } else {
+      throw new Error(
+        `Value of "${styleName}" CSS style property has to be a string`
+      );
+    }
   }
 
   if (className) {
-    element.classList.add(...className.split(' '));
+    if (typeof className === 'string') {
+      element.classList.add(...className.split(' '));
+    } else {
+      throw new Error('Value of "class" attribute has to be a string');
+    }
   }
 
   if (id) {
-    element.setAttribute('id', id);
+    if (typeof id === 'string') {
+      element.setAttribute('id', id);
+    } else {
+      throw new Error('Value of "id" attribute has to be a string');
+    }
   }
 
   for (const [attrName, attrValue] of Object.entries(attrs)) {
-    element.setAttribute(attrName, String(attrValue));
-  }
-
-  for (const [dataAttrName, dataAttrValue] of Object.entries(dataAttrs)) {
-    element.dataset[dataAttrName] = String(dataAttrValue);
-  }
-
-  for (const [ariaAttrName, ariaAttrValue] of Object.entries(ariaAttrs)) {
-    element.setAttribute(`aria-${ariaAttrName}`, String(ariaAttrValue));
-  }
-
-  for (const [eventName, eventHandler] of Object.entries(events)) {
-    if (eventName in element) {
-      // eslint-disable-next-line
-      // @ts-ignore
-      element[eventName] = eventHandler;
+    if (attrName.startsWith('on')) {
+      if (attrName in element) {
+        if (typeof attrValue === 'function') {
+          // eslint-disable-next-line
+          // @ts-ignore
+          element[attrName] = attrValue;
+        } else {
+          throw new Error(`Value of "${attrName}" has to be a function"`);
+        }
+      } else {
+        throw new Error(
+          `"${attrName}" does not exist on "${element.nodeName}"`
+        );
+      }
     } else {
-      throw new Error(`"${eventName}" does not exist on "${element.nodeName}"`);
+      if (typeof attrValue === 'string') {
+        element.setAttribute(attrName, attrValue);
+      } else {
+        throw new Error(`Value of "${attrName}" attribute has to be a string`);
+      }
+    }
+  }
+
+  for (const [dataAttrName, dataAttrValue] of Object.entries($data)) {
+    if (typeof dataAttrValue === 'string') {
+      element.dataset[dataAttrName] = dataAttrValue;
+    } else {
+      throw new Error(
+        `Value of "${dataAttrName}" data attribute has to be a string`
+      );
+    }
+  }
+
+  for (const [ariaAttrName, ariaAttrValue] of Object.entries($aria)) {
+    if (typeof ariaAttrValue === 'string') {
+      element.setAttribute(`aria-${ariaAttrName}`, ariaAttrValue);
+    } else {
+      throw new Error(
+        `Value of "${ariaAttrName}" ARIA attribute has to be a string`
+      );
     }
   }
 
@@ -99,7 +137,7 @@ export const h = <T extends HTMLElement>(
   }
   element.append(...nodes);
 
-  ref(element);
+  $ref(element);
 
   return element;
 };
