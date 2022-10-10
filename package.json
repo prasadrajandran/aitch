@@ -1,7 +1,7 @@
 {
   "name": "@prasadrajandran/h-js",
-  "version": "1.0.0-beta.1",
-  "description": "Easily generate HTML and CSS using JavaScript",
+  "version": "1.0.0-beta.2",
+  "description": "Generate HTML and CSS using JavaScript",
   "keywords": [
     "h.js",
     "css",
@@ -22,7 +22,8 @@
   "author": "Prasad Rajandran",
   "main": "dist/index.js",
   "files": [
-    "dist/"
+    "dist/",
+    "README.md"
   ],
   "scripts": {
     "build": "npm run eslint && npm run check-types && npm run build-src && npm run build-dts && npm test",
