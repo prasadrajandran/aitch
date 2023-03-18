@@ -1,5 +1,5 @@
 import prettier from 'prettier';
-import { hStyle } from '../dist';
+import { style } from '../dist';
 
 const testData = {
   'Parses a single block': {
@@ -50,11 +50,11 @@ const testData = {
   },
 };
 
-const runAndFormat = (data) => prettier.format(hStyle(data), { parser: 'css' });
+const runAndFormat = (data) => prettier.format(style(data), { parser: 'css' });
 
-describe('hStyle()', () => {
+describe('style()', () => {
   test('Expects an argument', () => {
-    expect(() => hStyle()).toThrowError();
+    expect(() => style()).toThrowError();
   });
 
   test('Parses empty object', () => {

@@ -1,67 +1,97 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`h() Snapshots Attrs set via the second argument take precedence over attrs set via the first argument 1`] = `
-<div>
-  <div
-    role="button"
-    style="font-size: 20px; display: absolute;"
-  >
-    Label!
+exports[`h() Snapshot matches 1`] = `
+<form>
+  
+        
+  <div>
+    
+          
+    First name: 
+    <input
+      type="text"
+    />
+    
+          
+    Last name: 
+    <input
+      type="text"
+    />
+    
+          
+    Age: 
+    <input
+      type="number"
+    />
+    
+          
+    Address: 
+    <input
+      type="text"
+    />
+    
+        
   </div>
-</div>
-`;
-
-exports[`h() Snapshots Parses element name 1`] = `
-<div>
-  <p />
-</div>
-`;
-
-exports[`h() Snapshots Parses element name and attributes as a single argument 1`] = `
-<div>
-  <div
-    aria-label="cta"
-    class="btn btn-primary"
-    id="btn"
-    style="font-size: 10px; display: absolute"
-    tabindex="0"
-  />
-</div>
-`;
-
-exports[`h() Snapshots Parses element name/attrs inside backticks 1`] = `
-<div
-  class="btn btn-primary"
-  style="font-size: 25px;"
->
-  <p />
-</div>
-`;
-
-exports[`h() Snapshots Second argument can be a node instead of attributes 1`] = `
-<div>
-  <p>
-    something
-    <br />
-    <span
-      style="font-weight: bold;"
+  
+        
+  <div>
+    <button
+      data-is-default="false"
+      style="padding: 0px 0px 0px 50px; font-family: Arial; margin: 0px;"
+      type="submit"
     >
-      else
-    </span>
-  </p>
-</div>
+      Submit
+    </button>
+  </div>
+  
+      
+</form>
 `;
 
-exports[`h() Snapshots Second argument can be used to apply attrs using JS 1`] = `
-<div>
-  <div
-    class="btn btn-primary"
-    data-expected-pattern="[a-z]"
-    id="mybtn"
-    role="button"
-    style="font-size: 10px; display: absolute; flex-direction: column;"
-  >
-    Label!
+exports[`h() snapshot matches 1`] = `
+<form>
+  
+        
+  <div>
+    
+          
+    First name: 
+    <input
+      type="text"
+    />
+    
+          
+    Last name: 
+    <input
+      type="text"
+    />
+    
+          
+    Age: 
+    <input
+      type="number"
+    />
+    
+          
+    Address: 
+    <input
+      type="text"
+    />
+    
+        
   </div>
-</div>
+  
+        
+  <div>
+    <button
+      data-is-default="false"
+      style="padding: 0px 0px 0px 50px; font-family: Arial; margin: 0px;"
+      type="submit"
+    >
+      Submit
+    </button>
+  </div>
+  
+      
+</form>
 `;

@@ -1,4 +1,4 @@
-import { h, hRepeat } from '../dist';
+import { h, repeat } from '../dist';
 
 const createItem = (id, name) => {
   return {
@@ -69,7 +69,7 @@ const createElementCallback = () => {
     expect(Number(key)).toEqual(index);
     expect(typeof id).toEqual('string');
     expect(typeof name).toEqual('string');
-    return h('div', id, h('br'), name);
+    return h/*html*/ `<div>${id}<br/>${name}</div>`;
   });
 };
 
@@ -93,7 +93,7 @@ const createKeyCallback = () => {
   });
 };
 
-describe('hRepeat()', () => {
+describe('repeat()', () => {
   const item0 = createItem('A-01', 'John');
   const item1 = createItem('B-02', 'Brian');
   const item2 = createItem('C-55', 'Adam');
@@ -119,10 +119,10 @@ describe('hRepeat()', () => {
 
   test('Accepts maps, sets, arrays, and objects and only container, items, and element are required', () => {
     [itemsArr, itemsObj, itemsMap, itemsSet].forEach((items) => {
-      const container = h('div');
+      const container = h/*html*/ `<div></div>`;
       const element = createElementCallback();
 
-      hRepeat({
+      repeat({
         container,
         items,
         element,
@@ -176,16 +176,14 @@ describe('hRepeat()', () => {
 
   test('Can change key value', () => {
     [itemsArr, itemsObj, itemsMap, itemsSet].forEach((items) => {
-      const container = h('div');
+      const container = h/*html*/ `<div></div>`;
       const element = createElementCallback();
 
-      hRepeat({
+      repeat({
         container,
         items,
         element,
-        opts: {
-          key: createKeyCallback(),
-        },
+        key: createKeyCallback(),
       });
 
       // ! Note: using inline snapshot because we want to make sure maps, !
@@ -236,17 +234,15 @@ describe('hRepeat()', () => {
 
   test('Can change key value and key name', () => {
     [itemsArr, itemsObj, itemsMap, itemsSet].forEach((items) => {
-      const container = h('div');
+      const container = h/*html*/ `<div></div>`;
       const element = createElementCallback();
 
-      hRepeat({
+      repeat({
         container,
         items,
         element,
-        opts: {
-          key: createKeyCallback(),
-          keyAttrName: 'key',
-        },
+        key: createKeyCallback(),
+        keyName: 'key',
       });
 
       // ! Note: using inline snapshot because we want to make sure maps, !
@@ -297,11 +293,11 @@ describe('hRepeat()', () => {
 
   test('Calls ref() on every item', () => {
     [itemsArr, itemsObj, itemsMap, itemsSet].forEach((items) => {
-      const container = h('div');
+      const container = h/*html*/ `<div></div>`;
       const element = createElementCallback();
       const ref = createRefCallback();
 
-      hRepeat({
+      repeat({
         container,
         items,
         element,
@@ -357,19 +353,19 @@ describe('hRepeat()', () => {
 
   test('Does not render nodes if their keys have not changed', () => {
     [itemsArr, itemsObj, itemsMap, itemsSet].forEach((items) => {
-      const container = h('div');
+      const container = h/*html*/ `<div></div>`;
       const element = createElementCallback();
       const firstCallNodes = [];
       const secondCallNodes = [];
 
-      hRepeat({
+      repeat({
         container,
         items,
         element,
         ref: ({ element }) => firstCallNodes.push(element),
       });
 
-      hRepeat({
+      repeat({
         container,
         items,
         element,
@@ -386,18 +382,18 @@ describe('hRepeat()', () => {
 
   test('Removes entries that have been deleted and adds new entries that have been added', () => {
     [itemsArr, itemsObj, itemsMap, itemsSet].forEach((items) => {
-      const container = h('div');
+      const container = h/*html*/ `<div></div>`;
       const item6 = createItem('X-29', 'Sheldon');
       const entries = addItem(removeItem(items, item1, item3), 6, item6);
 
-      hRepeat({
+      repeat({
         container,
         items: entries,
-        element: ({ item: { id, name } }) => h('div', id, h('br'), name),
-        opts: {
-          key: ({ item: { id } }) => id,
-          keyAttrName: 'k',
-        },
+        element: ({ item: { id, name } }) => h/*html*/ `
+          <div>${id}<br/>${name}</div>
+        `,
+        key: ({ item: { id } }) => id,
+        keyName: 'k',
       });
 
       // ! Note: using inline snapshot because we want to make sure maps, !
@@ -434,6 +430,41 @@ describe('hRepeat()', () => {
           </div>
         </div>
       `);
-    });
+    });  
   });
+  
+  /*
+   * Skipping this test due to a bug with JSDOM and the CSS direct descendant
+   * selector.
+   * https://github.com/jsdom/jsdom/issues/3362
+   */
+  test.skip('Only modifies immediate descendants', () => {
+    [itemsArr, itemsObj, itemsMap, itemsSet].forEach((items) => {
+      let innerContainer = null;
+      const container = h/*html*/ `
+        <div>
+          <div ${{ $ref: (el) => (innerContainer = el) }}></div>
+        </div>
+      `;
+  
+      expect(container).toBeInstanceOf(HTMLDivElement);
+      expect(innerContainer).toBeInstanceOf(HTMLDivElement);
+
+      const element = createElementCallback();
+
+      repeat({
+        container: innerContainer,
+        items,
+        element,
+      });
+  
+      repeat({
+        container,
+        items,
+        element,
+      });
+  
+      expect(container).toMatchInlineSnapshot();
+    });
+  });  
 });
