@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@prasadrajandran/h-js</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"
+      integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e"
+      crossorigin="anonymous"
+    />
+
+    <!-- Blank favicon -->
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+  </head>
+  <body>
+    <script type="module">
+      import { h, repeat } from './';
+
+      const items = new Map();
+
+      const itemsContainer = h/*html*/ `
+        <ol class="list-group list-group-numbered text-start"></ol>
+      `;
+
+      const updateItemsContainer = () => {
+        repeat({
+          container: itemsContainer,
+          items,
+          element: ({ item, key }) => h/*html*/ `
+            <li class="list-group-item">
+              <button
+                class="btn btn-outline-danger btn-sm"
+                ${{
+                  style: {
+                    border: 'none',
+                    borderRadius: '30px',
+                    marginRight: '5px',
+                    marginLeft: '5px',
+                  },
+                  onclick: () => {
+                    items.delete(key);
+                    updateItemsContainer();
+                  },
+                }}
+              >
+                <i class="bi bi-trash3"></i>
+              </button>
+              ${item}
+            </li>
+          `,
+        });
+      };
+
+      const input = h/*html*/ `
+        <input
+          class="form-control form-control-lg"
+          type="text"
+          placeholder="Text..."
+        />
+      `;
+
+      const submitBtn = h/*html*/ `
+        <button
+          type="submit"
+          class="btn btn-outline-secondary"
+          ${{
+            style: {
+              visibility: 'hidden',
+              position: 'absolute',
+            },
+            onclick: (e) => {
+              e.preventDefault();
+              if (input.value.trim()) {
+                items.set(performance.now(), input.value);
+                input.value = '';
+                updateItemsContainer();
+              }
+            },
+          }}
+        >
+          <i class="bi bi-plus-circle"></i> Add
+        </button>
+      `;
+
+      const form = h/*html*/ `
+        <form>
+          <p>${input}</p>
+          <p>${submitBtn}</p>
+        </form>
+      `;
+
+      document.body.append(h/*html*/ `
+        <div class="container text-center" style="max-width: 800px">
+          <h1 class="display-1">todos</h1>
+          ${form}
+          ${itemsContainer}
+        </div>
+      `); 
+    </script>
+  </body>
+</html>
