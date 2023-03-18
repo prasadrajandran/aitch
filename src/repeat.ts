@@ -4,7 +4,7 @@ interface HRepeatElementCallbackParams<ITEM> {
   index: number;
 }
 
-interface HRepeatRefCallbackParams<ITEM, ELEMENT>
+interface HRepeatRefCallbackParams<ITEM, ELEMENT extends Element>
   extends HRepeatElementCallbackParams<ITEM> {
   element: ELEMENT;
 }
@@ -13,17 +13,12 @@ interface HRepeatKeyCallback<ITEM> {
   ({ key, item, index }: HRepeatElementCallbackParams<ITEM>): string;
 }
 
-interface HRepeatElementCallback<ITEM, ELEMENT> {
+interface HRepeatElementCallback<ITEM, ELEMENT extends Element> {
   ({ key, item, index }: HRepeatElementCallbackParams<ITEM>): ELEMENT;
 }
 
-interface HRepeatRefCallback<ITEM, ELEMENT> {
+interface HRepeatRefCallback<ITEM, ELEMENT extends Element> {
   ({ key, item, index }: HRepeatRefCallbackParams<ITEM, ELEMENT>): void;
-}
-
-interface HRepeatOptions<ITEM> {
-  key?: HRepeatKeyCallback<ITEM>;
-  keyAttrName?: string;
 }
 
 interface HRepeatParams<ITEM, ELEMENT extends Element> {
@@ -35,23 +30,21 @@ interface HRepeatParams<ITEM, ELEMENT extends Element> {
     | Record<string | number | symbol, ITEM>;
   element: HRepeatElementCallback<ITEM, ELEMENT>;
   ref?: HRepeatRefCallback<ITEM, ELEMENT>;
-  opts?: HRepeatOptions<ITEM>;
+  key?: HRepeatKeyCallback<ITEM>;
+  keyName?: string;
 }
 
 /**
- * Render a collection of nodes.
+ * Render a collection of Elements.
  */
-export const hRepeat = <ITEM, ELEMENT extends Element>({
+export const repeat = <ITEM, ELEMENT extends Element>({
   container,
   items,
   element: elementCallback,
   ref,
-  opts = {},
+  key: keyValueCallback = (args) => String(args.key),
+  keyName = 'data-h-repeat-key',
 }: HRepeatParams<ITEM, ELEMENT>) => {
-  const keyAttrName = opts.keyAttrName || `data-h-repeat-key`;
-
-  const getKeyValue = opts.key || (({ key }) => key);
-
   const entries = Array.isArray(items)
     ? items.entries()
     : items instanceof Map
@@ -64,15 +57,16 @@ export const hRepeat = <ITEM, ELEMENT extends Element>({
 
   let index = 0;
   for (const [key, item] of entries) {
-    const keyValue = String(getKeyValue({ key, item, index }));
+    const keyValue = String(keyValueCallback({ key, item, index }));
     savedKeys.add(keyValue);
 
     let element = container.querySelector<ELEMENT>(
-      `[${keyAttrName}="${keyValue}"]`
+      `:scope > [${keyName}="${keyValue}"]`
     );
+
     if (!element) {
       element = elementCallback({ key, item, index });
-      element.setAttribute(keyAttrName, keyValue);
+      element.setAttribute(keyName, keyValue);
       container.append(element);
     }
 
@@ -83,8 +77,8 @@ export const hRepeat = <ITEM, ELEMENT extends Element>({
     index++;
   }
 
-  container.querySelectorAll(`[${keyAttrName}]`).forEach((element) => {
-    if (!savedKeys.has(element.getAttribute(keyAttrName) as string)) {
+  container.querySelectorAll(`:scope > [${keyName}]`).forEach((element) => {
+    if (!savedKeys.has(element.getAttribute(keyName) as string)) {
       element.remove();
     }
   });
