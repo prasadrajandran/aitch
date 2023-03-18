@@ -1,7 +1,7 @@
 {
   "version": 3,
   "sources": ["../src/index.ts"],
-  "sourcesContent": ["import { h } from './h';\nimport { hRepeat } from './h-repeat';\nimport { hStyle } from './h-style';\n\nexport { h, hRepeat, hStyle };\n"],
-  "mappings": "AAAA,OAAS,KAAAA,MAAS,MAClB,OAAS,WAAAC,MAAe,aACxB,OAAS,UAAAC,MAAc",
-  "names": ["h", "hRepeat", "hStyle"]
+  "sourcesContent": ["import { h } from './h';\nimport { repeat } from './repeat';\nimport { style } from './style';\nexport { h, repeat, style };\n"],
+  "mappings": "AAAA,OAAS,KAAAA,MAAS,MAClB,OAAS,UAAAC,MAAc,WACvB,OAAS,SAAAC,MAAa",
+  "names": ["h", "repeat", "style"]
 }

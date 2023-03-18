@@ -5,5 +5,5 @@ declare type StyleRules = {
  * Add CSS style sheet rules.
  * @param rules Style rules.
  */
-export declare const hStyle: (rules: StyleRules) => string;
+export declare const style: (rules: StyleRules) => string;
 export {};
