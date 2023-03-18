@@ -6,7 +6,7 @@ type StyleRules = {
  * Add CSS style sheet rules.
  * @param rules Style rules.
  */
-export const hStyle = (rules: StyleRules) => {
+export const style = (rules: StyleRules): string => {
   const parser = (rules: StyleRules) => {
     return Object.entries(rules).map(([selector, styles]) => {
       const cssText = Object.entries(styles).reduce((items, [name, value]) => {
