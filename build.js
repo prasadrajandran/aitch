@@ -10,8 +10,7 @@ const entryPoints = [
   path.resolve(srcDir, 'repeat.ts'),
   path.resolve(srcDir, 'style.ts'),
 ];
-
-esbuild.build({
+const buildOptions = {
   entryPoints,
   outdir: distDir,
   bundle: false,
@@ -19,5 +18,15 @@ esbuild.build({
   sourcemap: true,
   format: 'esm',
   platform: 'browser',
-  watch,
-});
+};
+
+(async () => {
+  if (watch) {
+    const ctx = await esbuild.context(buildOptions)
+    await ctx.watch();
+    console.log('Watching build...');
+  } else {
+    const results = await esbuild.build(buildOptions);
+    console.log(results);
+  }
+})();  

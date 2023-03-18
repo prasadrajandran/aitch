@@ -1,2 +1,2 @@
-const y=s=>{const e=n=>Object.entries(n).map(([a,t])=>{const l=Object.entries(t).reduce((o,[c,r])=>typeof r=="string"?o+=`${c.replace(/[A-Z]/g,i=>`-${i.toLowerCase()}`)}:${r};`:e(t).join(""),"");return`${a}{${l}}`});return e(s).join("")};export{y as style};
+const y=s=>{const e=n=>Object.entries(n).map(([l,t])=>{const a=Object.entries(t).reduce((o,[c,r])=>{if(typeof r=="string"){const i=c.replace(/[A-Z]/g,u=>`-${u.toLowerCase()}`);return o+=`${i}:${r};`}return e(t).join("")},"");return`${l}{${a}}`});return e(s).join("")};export{y as style};
 //# sourceMappingURL=style.js.map

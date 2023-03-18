@@ -1,4 +1,4 @@
-declare type StyleRules = {
+type StyleRules = {
     [selector: string]: Partial<CSSStyleDeclaration> | StyleRules;
 };
 /**

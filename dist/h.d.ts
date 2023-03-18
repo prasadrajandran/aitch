@@ -1,4 +1,4 @@
-declare type ElementAttrs = {
+type ElementAttrs = {
     /**
      * Obtain a reference to the instantiated Element with this callback.
      * @param element
@@ -20,8 +20,8 @@ declare type ElementAttrs = {
      */
     [attr: string]: unknown;
 } & Partial<GlobalEventHandlers>;
-declare type TemplateLiteralArgIndex = number;
-declare type TaggedArgsMap = Map<TemplateLiteralArgIndex, Node | ElementAttrs>;
+type TemplateLiteralArgIndex = number;
+type TaggedArgsMap = Map<TemplateLiteralArgIndex, Node | ElementAttrs>;
 /**
  * Parses HTML template literal and tags interpolated attributes and nodes.
  * @param htmlStrings Template literal HTML strings.
