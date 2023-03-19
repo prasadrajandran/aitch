@@ -188,6 +188,71 @@ describe('h()', () => {
     expect(form.querySelector('button').innerHTML).toBe(btnText.wholeText);
   });
 
+  test('Object whose prototype is null is considered a valid template argument', () => {
+    const props = Object.create(null);
+    props.dataset = { label: 'something' };
+    expect(() => h/*html*/ `<div ${props}><div>`).not.toThrowError();
+  });
+
+  test('Error thrown if template argument is invalid', () => {
+    [null, undefined, [], () => {}, new Map(), new Set()].forEach((arg) => {
+      expect(
+        () => h/*html*/ `
+        <div data-label="${arg}"></div>
+      `
+      ).toThrowError('Invalid template argument at position 0');
+
+      expect(
+        () => h/*html*/ `
+        <div data-label="${'something'}"></div>
+        <div data-label="${arg}"></div>
+      `
+      ).toThrowError('Invalid template argument at position 1');
+
+      expect(
+        () => h/*html*/ `
+        <div>${arg}</div>
+      `
+      ).toThrowError('Invalid template argument at position 0');
+
+      expect(
+        () => h/*html*/ `
+        <div data-label="${'something'}"></div>
+        <div>${arg}</div>
+      `
+      ).toThrowError('Invalid template argument at position 1');
+    });
+  });
+
+  test('Throws error if template argument(s) are in unexpected positions', () => {
+    expect(
+      () => h/*html*/ `
+      <div id="${new Text('something')}"></div>
+    `
+    ).toThrowError('Unexpected template argument at position 0 (zero-based)');
+
+    expect(
+      () => h/*html*/ `
+      <div id="${{ dataset: { label: 'something' } }}"></div>
+    `
+    ).toThrowError('Unexpected template argument at position 0 (zero-based)');
+
+    expect(
+      () => h/*html*/ `
+      <div>${{ dataset: { label: 'something' } }}</div>
+    `
+    ).toThrowError('Unexpected template argument at position 0 (zero-based)');
+
+    expect(
+      () => h/*html*/ `
+      <div data-index="${1}">${{ dataset: { label: 'something' } }}</div>
+      <button data-index="${2}">${{ type: 'button' }}</button>
+    `
+    ).toThrowError(
+      'Unexpected template arguments at positions [1, 3] (zero-based)'
+    );
+  });
+
   test('Snapshot matches', () => {
     const input1 = h/*html*/ `First name: <input type="text">`;
     const input2 = h/*html*/ `Last name: <input type="text">`;

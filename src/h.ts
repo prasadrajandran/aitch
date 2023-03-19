@@ -67,20 +67,31 @@ const parseAndTagArgs = (
     .reduce((combinedHtmlStrings, htmlString, argIndex) => {
       const htmlChunk = `${combinedHtmlStrings}${htmlString}`;
       const arg = templateArgs[argIndex];
+      const argType = typeof arg;
+      // This check is meant to guard against honest mistakes not scenarios
+      // where the user is trying to intentionally pass a value off as a plain
+      // object, so it does not have to be exhaustive.
+      const isPlainObject =
+        arg &&
+        (arg.constructor === Object || Object.getPrototypeOf(arg) === null);
       if (argIndex === lastHtmlStringIndex) {
         return htmlChunk;
       } else if (
-        typeof arg === 'string' ||
-        typeof arg === 'number' ||
-        typeof arg === 'boolean'
+        argType === 'string' ||
+        argType === 'number' ||
+        argType === 'boolean'
       ) {
         return `${htmlChunk}${arg}`;
       } else if (arg instanceof Node) {
         taggedArgs.set(argIndex, arg as Node);
         return `${htmlChunk}${makeTaggedNode(argIndex)}`;
-      } else {
+      } else if (isPlainObject) {
         taggedArgs.set(argIndex, arg as ElementAttrs);
         return `${htmlChunk}${makeTaggedAttr(argIndex)}`;
+      } else {
+        throw new Error(
+          `Invalid template argument at position ${argIndex} (zero-based)`
+        );
       }
     }, '')
     // The combined HTML strings must be trimmed to remove meaningless
@@ -108,9 +119,15 @@ const interpolate = ({
 }: ReturnType<typeof parseAndTagArgs>): Node | DocumentFragment => {
   const fragment = template.content.cloneNode(true) as DocumentFragment;
 
+  const processedTaggedArgs = new Set();
   fragment.querySelectorAll(`[${TAGGED_ATTR_NAME}]`).forEach((node) => {
     const argIndex = Number(node.getAttribute(TAGGED_ATTR_NAME) as string);
     const arg = taggedArgs.get(argIndex) as Node | ElementAttrs;
+
+    // Note: not deleting processed values from `taggedArgs` even though that
+    // is easier because that introduces a side effect.
+    processedTaggedArgs.add(argIndex);
+
     if (arg instanceof Node) {
       node.replaceWith(arg);
     } else {
@@ -149,6 +166,21 @@ const interpolate = ({
       });
     }
   });
+
+  if (processedTaggedArgs.size !== taggedArgs.size) {
+    const indices: number[] = [];
+    for (const argIndex of taggedArgs.keys()) {
+      if (!processedTaggedArgs.has(argIndex)) {
+        indices.push(argIndex);
+      }
+    }
+    const plural = indices.length > 1 ? 's' : '';
+    throw new Error(
+      `Unexpected template argument${plural} at position${plural} ${
+        '' + plural ? `[${indices.join(', ')}]` : indices[0]
+      } (zero-based)`
+    );
+  }
 
   return fragment.childNodes.length === 1
     ? (fragment.childNodes[0] as Node)
