@@ -430,9 +430,9 @@ describe('repeat()', () => {
           </div>
         </div>
       `);
-    });  
+    });
   });
-  
+
   /*
    * Skipping this test due to a bug with JSDOM and the CSS direct descendant
    * selector.
@@ -446,7 +446,7 @@ describe('repeat()', () => {
           <div ${{ $ref: (el) => (innerContainer = el) }}></div>
         </div>
       `;
-  
+
       expect(container).toBeInstanceOf(HTMLDivElement);
       expect(innerContainer).toBeInstanceOf(HTMLDivElement);
 
@@ -457,14 +457,14 @@ describe('repeat()', () => {
         items,
         element,
       });
-  
+
       repeat({
         container,
         items,
         element,
       });
-  
+
       expect(container).toMatchInlineSnapshot();
     });
-  });  
+  });
 });

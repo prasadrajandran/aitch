@@ -26,15 +26,15 @@
     "README.md"
   ],
   "scripts": {
-    "build": "npm run eslint && npm run check-types && npm run build-src && npm run build-dts && npm test",
+    "build": "npm run prettier-fix && npm run eslint && npm run check-types && npm run build-src && npm run build-dts && npm test",
     "build-dts": "tsc --declaration --emitDeclarationOnly",
     "build-src": "node ./build.js",
     "build-src-watch": "node ./build.js --watch",
-    "serve-demo": "web-dev-server --node-resolve --app-index ./demo.html  --watch --open",
     "check-types": "tsc --noEmit",
     "eslint": "eslint .",
     "prettier-fix": "prettier . --write",
-    "test": "jest"
+    "test": "jest",
+    "serve-demo": "web-dev-server --node-resolve --app-index ./demo.html  --watch --open"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",

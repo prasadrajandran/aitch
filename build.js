@@ -22,11 +22,11 @@ const buildOptions = {
 
 (async () => {
   if (watch) {
-    const ctx = await esbuild.context(buildOptions)
+    const ctx = await esbuild.context(buildOptions);
     await ctx.watch();
     console.log('Watching build...');
   } else {
     const results = await esbuild.build(buildOptions);
     console.log(results);
   }
-})();  
+})();
