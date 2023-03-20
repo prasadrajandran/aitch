@@ -90,7 +90,8 @@ const parseAndTagArgs = (
         return `${htmlChunk}${makeTaggedAttr(argIndex)}`;
       } else {
         throw new Error(
-          `Invalid template argument at position ${argIndex} (zero-based)`
+          `Invalid template argument at position ${argIndex} ` +
+            `(zero-based numbering)`
         );
       }
     }, '')
@@ -178,7 +179,7 @@ const interpolate = ({
     throw new Error(
       `Unexpected template argument${plural} at position${plural} ${
         '' + plural ? `[${indices.join(', ')}]` : indices[0]
-      } (zero-based)`
+      } (zero-based numbering)`
     );
   }
 

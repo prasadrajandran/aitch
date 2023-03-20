@@ -229,19 +229,25 @@ describe('h()', () => {
       () => h/*html*/ `
       <div id="${new Text('something')}"></div>
     `
-    ).toThrowError('Unexpected template argument at position 0 (zero-based)');
+    ).toThrowError(
+      'Unexpected template argument at position 0 (zero-based numbering)'
+    );
 
     expect(
       () => h/*html*/ `
       <div id="${{ dataset: { label: 'something' } }}"></div>
     `
-    ).toThrowError('Unexpected template argument at position 0 (zero-based)');
+    ).toThrowError(
+      'Unexpected template argument at position 0 (zero-based numbering)'
+    );
 
     expect(
       () => h/*html*/ `
       <div>${{ dataset: { label: 'something' } }}</div>
     `
-    ).toThrowError('Unexpected template argument at position 0 (zero-based)');
+    ).toThrowError(
+      'Unexpected template argument at position 0 (zero-based numbering)'
+    );
 
     expect(
       () => h/*html*/ `
@@ -249,7 +255,7 @@ describe('h()', () => {
       <button data-index="${2}">${{ type: 'button' }}</button>
     `
     ).toThrowError(
-      'Unexpected template arguments at positions [1, 3] (zero-based)'
+      'Unexpected template arguments at positions [1, 3] (zero-based numbering)'
     );
   });
 
