@@ -43,15 +43,15 @@ const makeTaggedAttr = (i: number): string => `${TAGGED_ATTR_NAME}="${i}"`;
 const makeTaggedNode = (i: number): string => `<i ${makeTaggedAttr(i)}></i>`;
 
 /**
- * Parses HTML template literal and tags interpolated attributes and nodes.
+ * Parses HTML template.
  * @param htmlStrings Template literal HTML strings.
  * @param templateArgs Template literal interpolated values.
  */
-const parseAndTagArgs = (
+const parseTemplate = (
   htmlStrings: TemplateStringsArray,
   templateArgs: (string | number | boolean | ElementAttrs | Node)[]
 ): {
-  template: HTMLTemplateElement;
+  taggedTemplate: HTMLTemplateElement;
   taggedArgs: TaggedArgsMap;
 } => {
   const taggedArgs: TaggedArgsMap = new Map();
@@ -59,11 +59,11 @@ const parseAndTagArgs = (
   // Intentionally using a `template` instead of something like a `div` as we
   // do not want any events from the elements to trigger while we're parsing the
   // template.
-  const template = document.createElement('template');
+  const taggedTemplate = document.createElement('template');
 
   const lastHtmlStringIndex = htmlStrings.length - 1;
 
-  template.innerHTML = htmlStrings
+  taggedTemplate.innerHTML = htmlStrings
     .reduce((combinedHtmlStrings, htmlString, argIndex) => {
       const htmlChunk = `${combinedHtmlStrings}${htmlString}`;
       const arg = templateArgs[argIndex];
@@ -105,7 +105,7 @@ const parseAndTagArgs = (
     .trim();
 
   return {
-    template,
+    taggedTemplate,
     taggedArgs,
   };
 };
@@ -115,10 +115,10 @@ const parseAndTagArgs = (
  * @param args Parsed and tagged HTML.
  */
 const interpolate = ({
-  template,
+  taggedTemplate,
   taggedArgs,
-}: ReturnType<typeof parseAndTagArgs>): Node | DocumentFragment => {
-  const fragment = template.content.cloneNode(true) as DocumentFragment;
+}: ReturnType<typeof parseTemplate>): Node | DocumentFragment => {
+  const fragment = taggedTemplate.content.cloneNode(true) as DocumentFragment;
 
   const processedTaggedArgs = new Set();
   fragment.querySelectorAll(`[${TAGGED_ATTR_NAME}]`).forEach((node) => {
@@ -197,5 +197,5 @@ export const h = (
   htmlStrings: TemplateStringsArray,
   ...templateArgs: (string | number | boolean | ElementAttrs | Node)[]
 ): ReturnType<typeof interpolate> => {
-  return interpolate(parseAndTagArgs(htmlStrings, templateArgs));
+  return interpolate(parseTemplate(htmlStrings, templateArgs));
 };

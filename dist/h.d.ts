@@ -28,14 +28,14 @@ type TaggedArgsMap = Map<TemplateLiteralArgIndex, Node | ElementAttrs>;
  * @param templateArgs Template literal interpolated values.
  */
 declare const parseAndTagArgs: (htmlStrings: TemplateStringsArray, templateArgs: (string | number | boolean | ElementAttrs | Node)[]) => {
-    template: HTMLTemplateElement;
+    taggedTemplate: HTMLTemplateElement;
     taggedArgs: TaggedArgsMap;
 };
 /**
  * Interpolate parsed HTML template literal with template literal arguments.
  * @param args Parsed and tagged HTML.
  */
-declare const interpolate: ({ template, taggedArgs, }: ReturnType<typeof parseAndTagArgs>) => Node | DocumentFragment;
+declare const interpolate: ({ taggedTemplate, taggedArgs, }: ReturnType<typeof parseAndTagArgs>) => Node | DocumentFragment;
 /**
  * Parse HTML template literal.
  * @param htmlStrings HTML template literal
