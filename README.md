@@ -1,6 +1,49 @@
 # h.js
 
-Create HTML and/or CSS in JavaScript.
+Easily create HTML templates in pure JavaScript:
+
+```javascript
+import { h } from '@prasadrajandran/h-js';
+
+const nameInput = h`<input type="text" name="name">`;
+const onclick = (e) => {
+  e.preventDefault();
+  const name = nameInput.value;
+  // process form data...
+};
+const form = h`
+  <form>
+    Name ${nameInput}
+    <button type="submit" ${{ onclick }}>
+      Submit
+    </button>
+  </form
+`;
+document.body.append(form);
+```
+
+It's just template literals and a tag function so that values other than strings can
+be easily assigned to HTML elements.
+
+## Motivation
+
+JavaScript needs an HTML templating language that's:
+
+- Low maintenance
+  - No need to bug the author to update the package because it introduces 0
+    custom syntax. `h` is not parsing a custom language, it's just a tag
+    function to handle complex values like event handlers. That makes it
+    highly unlikely to break unless JavaScript and/or HTML introduce a breaking
+    change.
+- Focused
+  - It's designed to build HTML templates in JavaScript easily. That's it. It
+    does not handle state management. That's for you to figure out.
+- Lightweight
+  - The tag function, `h`, is ~1.4kB.
+
+Since this is a JavaScript package, it's mandatory for me to make claims about
+how fast `h` is. `h`'s top speed is 25 salmon per second (sm/s). It also
+updates the DOM with panache and rage in equal measure.
 
 ## Installation
 
@@ -8,76 +51,120 @@ Create HTML and/or CSS in JavaScript.
 npm install @prasadrajandran/h-js
 ```
 
-## Why Would I Use This Instead of JSX?
+## Guide
 
-Maybe you're bored?
-
-## How Do I Use It
+- [h()](#h)
+  - Create HTML in pure JavaScript using template literals.
+- [repeat()](#repeat)
+  - Create repeating HTML elements given an array, map, set, or object.
+- [style()](#style)
+  - Create CSS styles using JavaScript.
 
 ### h()
+
+HTML template parser.
 
 ```javascript
 import { h } from '@prasadrajandran/h-js';
 
-// Equivalent to document.createElement('p');
-const p = h('p');
+// Create a single node
+const input = h`<input type="text" name="firstName">`;
 
-// Apply attributes "inline"
-const btn = h('button class="btn btn-primary" style="color: blue;"');
+// Create a fragment
+const formBody = h`
+  First name: <input type="text" name="firstName">
+  Last name: <input type="text" name="lastName">
+  <button>Submit</button>
+`;
 
-const className = 'heading section';
-const div = h(`div class="${className}"`);
+// Compose templates from other nodes or fragments
+const firstNameInput = h`<input type="text" name="firstName">`;
+const ageInput = h`<input type="number" name="age">`;
+const submitBtn = h`<button type="submit">Submit</button>`;
+const formBody = h`
+  First name: ${firstNameInput}
+  Age: ${ageInput}
+  ${submitBtn}
+`;
+const form = h`<form>${formBody}</form>`;
 
-// Apply attributes/event handlers using JS
-const div = h('div', {
-  class: 'btn btn-primary',
-  id: 'main-btn',
-  // Anything that starts with "on" is assumed to be an event handler
-  onclick: () => console.info('clicked!'),
-  role: 'button',
-  // This is a shorthand for style properties. Technically, style could be
-  // defined like this "style: 'font-size: 2px'", but this allows you to define
-  // as object properties in camel case.
-  $style: {
-    fontSize: '25px',
-  },
-  // Like $style, this is a shorthand for "data" attributes. The properties are
-  // expected to be in camel case. This property could also have been defined
-  // like this: "'data-registration-id': 'x-al'".
-  $data: {
-    registrationId: 'x-a1', // this gets applied as "data-registration-id"
-  },
-  // Like $data, this is a shorthand for "aria" attributes. The properties are
-  // expected to be in kebab case.
-  $aria: {
-    label: 'main section', // this would get applied as "aria-label"
-  },
-  $ref: (el) => {
-    // callback to reference the element after it has been created
-  },
-});
+// Interpolate strings, numbers, and booleans. Numbers and booleans are
+// converted into strings.
+const isHidden = () => true;
+const ariaLevel = 5;
+const ariaDescription = 'A container that displays...';
+const div = h`
+  <div
+    aria-level="${ariaLevel}"
+    aria-hidden="${isHidden()}"
+    aria-description="${ariaDescription}"
+  >
+    Lorem ipsum...
+  </div>
+`;
 
-// Add child nodes
-const p = h('p', 'something', h('br'), 'like', h('br'), 'this');
+// Interpolate more complex values like event handlers using an object.
+const firstNameInput = h`<input type="text" name="firstName">`;
+const ageInput = h`<input type="number" name="age">`;
+const submitBtn = h`<button type="submit">Submit</button>`;
+const onsubmit = (e) => {
+  e.preventDefault();
+  /* Do something... */
+};
+const form = h`
+  <form ${{ onsubmit }}>
+    First name: ${firstNameInput}
+    Age: ${ageInput}
+    ${submitBtn}    
+  </form>
+`;
 
-// Note that the second argument could be attributes/events or a node
-const p = h(
-  'p',
-  { onclick: () => console.info('clicked!') },
-  'something',
-  h('br'),
-  'like',
-  h('br'),
-  'this'
-);
+// Inline styles, data attributes, obtaining a reference to a node within
+// a template, and any other attribute can also be interpolated using an object.
+// Please note that:
+// (1) "style" properties must be in camelCase.
+// (2) "dataset" properties must be in camelCase.
+//     - E.g. dataset: { customData: '123' } = 'data-custom-data="123"'
+// (3) "$ref" is a callback that allows you to obtain a reference to a node
+//     within a template.
+// (4) All other properties in an object are assigned
+//     - (a) If the following is true "property in node", then the property is
+//           assigned like this: "node[property] = value"
+//           This is how event handlers are assigned.
+//     - (b) If (a) is not true, then the property is assigned like this:
+//           "node.setAttribute(property, value)"
+
+let btn = null; // Gets assigned in the "$ref" callback below:
+const div = h`
+  <form>
+    Email: <input type="text">
+    <button ${{
+      onclick: (e) => e.preventDefault(),
+      style: {
+        padding: '10px',
+        fontFamily: '"Goudy Bookletter 1911", sans-serif',
+      },
+      dataset: {
+        test: 'submitBtn',
+        customData: '123',
+      },
+      $ref: (el) => (btn = el),
+    }}>
+      Submit
+    </button>
+  </form>
+`;
 ```
 
-### hRepeat()
+### repeat()
+
+Render repeating HTML elements.
 
 ```javascript
-import { h, hRepeat } from '@prasadrajandran/h-js';
+import { h, repeat } from '@prasadrajandran/h-js';
 
-const items = [
+const peopleContainer = document.querySelector('#peopleContainer');
+const people = [
   {
     id: 'A-01',
     name: 'John',
@@ -87,44 +174,63 @@ const items = [
     name: 'Michael',
   },
 ];
-
-const container = h('div');
-hRepeat({
-  // Required: Container that houses the items.
-  container,
-  // Required: Items to iterate over. Can be an array, map, set, or plain
-  // object.
-  items,
-  // Required: Callback that generates the template for each iteration.
-  element: ({ key, item: { id, name }, index }) => {
-    return h('p', id, h('br'), name);
-  },
-  // Optional: Callback that gets called on each item.
-  ref: ({ key, item, index, element }) => {},
-  // Optional: Options
-  opts: {
-    // The value returned by this callback will be used to uniquely identify
-    // each item. If not set, it will use the array index, map key, set's
-    // index order (like an array), or plain object's key. This value MUST BE
-    // UNIQUE. It is strongly recommended that this be set to something other
-    // than the array/set's indices.
+const renderPeople = () => {
+  repeat({
+    // Required: Container that houses the items.
+    container: peopleContainer,
+    // Required: Items to render. Supported types:
+    // (1) Array
+    // (2) Set
+    // (3) Map
+    // (4) Plain object.
+    items: people,
+    // Required: Callback that generates the element node on each item.
+    element: ({ key, item: { id, name }, index }) => {
+      return h`<p>${id}<br>${name}</p>`;
+    },
+    // Optional: Callback that is called on each item. This can be used to
+    // update the element on each re-render.
+    ref: ({ key, item, index, element }) => {},
+    // Optional (but recommended to set!): The value returned by this callback
+    // will be used to uniquely identify each element node.
+    //
+    // If this is not set, then the following defaults apply for:
+    // (1) Arrays  : array indices
+    // (2) Sets    : order of properties (effectively like array indices)
+    // (3) Maps    : map keys
+    // (4) Objects : object keys
+    //
+    // The value returned by this callback must be unique!
+    // If (1) or (2) is used, then this should ideally be defined as array or
+    // set indices do not make good keys!
     key: ({ key, item, index }) => item.id,
-    // Name of attribute that hStyle() will query to decide if the element
-    // needs to be removed the next time hStyle() is called.
-    keyAttrName: 'data-key', // Default is 'data-h-repeat-key'
-  },
-});
+    // Optional: Name of the attribute for the keys that would be applied on
+    // each element. If not set, the default is "data-h-repeat-key".
+    keyName: 'data-key',
+  });
+};
+
+// Render the DOM elements.
+renderPeople();
+
+// Some event happens and the "people" array is updated.
+people.splice(0, 1);
+people.push({ id: 'X-30', name: 'Josephine' });
+
+// Call this again to update the DOM.
+renderPeople();
 ```
 
-### hStyle()
+### style()
+
+Create CSS styles using JavaScript.
 
 ```javascript
-import { hStyle } from '@prasadrajandran/h-js';
+import { style } from '@prasadrajandran/h-js';
 
-// Create styles
 const selector = 'div:hover';
 const style = document.createElement('style');
-style.innerHTML = hStyle({
+style.innerHTML = style({
   p: {
     fontSize: '10px',
     fontWeight: 'bold',
@@ -141,11 +247,6 @@ style.innerHTML = hStyle({
   `]: {
     display: 'absolute',
   },
-});
-document.head.appendChild(style);
-
-// Create media queries
-hStyle({
   '@media (height: 360px)': {
     div: {
       fontSize: '10px',
@@ -156,10 +257,6 @@ hStyle({
       fontSize: '10px',
     },
   },
-});
-
-// Create animation keyframes
-hStyle({
   '@keyframes slideIn': {
     from: {
       transform: 'translateX(0%)',
@@ -169,4 +266,6 @@ hStyle({
     },
   },
 });
+
+document.head.appendChild(style);
 ```
