@@ -1,13 +1,12 @@
 {
   "name": "@prasadrajandran/h-js",
   "version": "1.0.0-beta.2",
-  "description": "Generate HTML and CSS using JavaScript",
+  "description": "HTML templating in JavaScript",
   "keywords": [
     "h.js",
-    "css",
     "html",
-    "looping",
-    "css-in-js",
+    "css",
+    "templating",
     "html-templating"
   ],
   "homepage": "https://github.com/prasadrajandran/h-js#readme",
