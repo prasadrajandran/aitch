@@ -23,11 +23,11 @@ type ElementAttrs = {
 type TemplateLiteralArgIndex = number;
 type TaggedArgsMap = Map<TemplateLiteralArgIndex, Node | ElementAttrs>;
 /**
- * Parses HTML template literal and tags interpolated attributes and nodes.
+ * Parses HTML template.
  * @param htmlStrings Template literal HTML strings.
  * @param templateArgs Template literal interpolated values.
  */
-declare const parseAndTagArgs: (htmlStrings: TemplateStringsArray, templateArgs: (string | number | boolean | ElementAttrs | Node)[]) => {
+declare const parseTemplate: (htmlStrings: TemplateStringsArray, templateArgs: (string | number | boolean | ElementAttrs | Node)[]) => {
     taggedTemplate: HTMLTemplateElement;
     taggedArgs: TaggedArgsMap;
 };
@@ -35,7 +35,7 @@ declare const parseAndTagArgs: (htmlStrings: TemplateStringsArray, templateArgs:
  * Interpolate parsed HTML template literal with template literal arguments.
  * @param args Parsed and tagged HTML.
  */
-declare const interpolate: ({ taggedTemplate, taggedArgs, }: ReturnType<typeof parseAndTagArgs>) => Node | DocumentFragment;
+declare const interpolate: ({ taggedTemplate, taggedArgs, }: ReturnType<typeof parseTemplate>) => Node | DocumentFragment;
 /**
  * Parse HTML template literal.
  * @param htmlStrings HTML template literal
