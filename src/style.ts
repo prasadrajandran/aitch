@@ -3,12 +3,12 @@ type StyleRules = {
 };
 
 /**
- * Add CSS style sheet rules.
- * @param rules Style rules.
+ * Create CSS style sheet rules given a JavaScript object.
+ * @param rules CSS rules.
  */
 export const style = (rules: StyleRules): string => {
-  const parser = (rules: StyleRules) => {
-    return Object.entries(rules).map(([selector, styles]) => {
+  return Object.entries(rules)
+    .map(([selector, styles]) => {
       const cssText = Object.entries(styles).reduce((items, [name, value]) => {
         if (typeof value === 'string') {
           const snakeCasedName = name.replace(
@@ -17,10 +17,9 @@ export const style = (rules: StyleRules): string => {
           );
           return (items += `${snakeCasedName}:${value};`);
         }
-        return parser(styles as StyleRules).join('');
+        return style(styles as StyleRules);
       }, '') as string;
       return `${selector}{${cssText}}`;
-    });
-  };
-  return parser(rules).join('');
+    })
+    .join('');
 };
