@@ -7,7 +7,9 @@
     "html",
     "css",
     "templating",
-    "html-templating"
+    "html-templating",
+    "html-in-javascript",
+    "html-in-js"
   ],
   "homepage": "https://github.com/prasadrajandran/h#readme",
   "bugs": {
