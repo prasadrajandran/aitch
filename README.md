@@ -1,9 +1,9 @@
-# h.js
+# h
 
 Easily create HTML templates in pure JavaScript:
 
 ```javascript
-import { h } from '@prasadrajandran/h-js';
+import { h } from '@prasadrajandran/h';
 
 const nameInput = h`<input type="text" name="name">`;
 const onclick = (e) => {
@@ -48,7 +48,7 @@ updates the DOM with panache and rage in equal measure.
 ## Installation
 
 ```
-npm install @prasadrajandran/h-js
+npm install @prasadrajandran/h
 ```
 
 ## Guide
@@ -65,7 +65,7 @@ npm install @prasadrajandran/h-js
 HTML template parser.
 
 ```javascript
-import { h } from '@prasadrajandran/h-js';
+import { h } from '@prasadrajandran/h';
 
 // Create a single node
 const input = h`<input type="text" name="firstName">`;
@@ -161,7 +161,7 @@ const div = h`
 Render repeating HTML elements.
 
 ```javascript
-import { h, repeat } from '@prasadrajandran/h-js';
+import { h, repeat } from '@prasadrajandran/h';
 
 const peopleContainer = document.querySelector('#peopleContainer');
 const people = [
@@ -226,7 +226,7 @@ renderPeople();
 Create CSS styles using JavaScript.
 
 ```javascript
-import { style } from '@prasadrajandran/h-js';
+import { style } from '@prasadrajandran/h';
 
 const selector = 'div:hover';
 const style = document.createElement('style');
