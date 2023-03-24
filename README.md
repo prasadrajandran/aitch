@@ -135,7 +135,7 @@ const form = h`
 //           "node.setAttribute(property, value)"
 
 let btn = null; // Gets assigned in the "$ref" callback below:
-const div = h`
+const form = h`
   <form>
     Email: <input type="text">
     <button ${{
