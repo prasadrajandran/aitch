@@ -54,15 +54,19 @@ npm install @prsd/aitch
 ## Guide
 
 - [h()](#h)
-  - Create HTML in pure JavaScript using template literals.
+  - Create HTML in JavaScript.
 - [repeat()](#repeat)
-  - Create repeating HTML elements given an array, map, set, or object.
+  - Create repeating HTML elements.
 - [style()](#style)
-  - Create CSS styles using JavaScript.
+  - Create CSS styles in JavaScript.
 
 ### h()
 
-HTML template parser.
+Create HTML in JavaScript.
+
+If you use <a href="https://code.visualstudio.com/" target="_blank">VS Code</a>,
+you could add HTML syntax highlighting with a plugin like
+<a href="https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html" target="_blank">es6-string-html</a>.
 
 ```javascript
 import { h } from '@prsd/aitch';
@@ -158,7 +162,7 @@ const form = h`
 
 ### repeat()
 
-Render repeating HTML elements.
+Create repeating HTML elements.
 
 ```javascript
 import { h, repeat } from '@prsd/aitch';
@@ -223,7 +227,7 @@ renderPeople();
 
 ### style()
 
-Create CSS styles using JavaScript.
+Create CSS styles in JavaScript.
 
 ```javascript
 import { style } from '@prsd/aitch';
