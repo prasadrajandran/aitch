@@ -1,4 +1,4 @@
-# h
+# aitch
 
 Easily create HTML templates in pure JavaScript:
 
