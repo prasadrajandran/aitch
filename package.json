@@ -1,9 +1,8 @@
 {
   "name": "@prsd/aitch",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "description": "HTML templating in JavaScript",
   "keywords": [
-    "h.js",
     "html",
     "css",
     "templating",
@@ -11,13 +10,13 @@
     "html-in-javascript",
     "html-in-js"
   ],
-  "homepage": "https://github.com/prasadrajandran/h#readme",
+  "homepage": "https://github.com/prasadrajandran/aitch#readme",
   "bugs": {
-    "url": "https://github.com/prasadrajandran/h/issues"
+    "url": "https://github.com/prasadrajandran/aitch/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/prasadrajandran/h.git"
+    "url": "git+https://github.com/prasadrajandran/aitch.git"
   },
   "license": "MIT",
   "author": "Prasad Rajandran",
