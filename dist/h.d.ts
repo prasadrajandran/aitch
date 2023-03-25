@@ -1,6 +1,6 @@
 type ElementAttrs = {
     /**
-     * Obtain a reference to the instantiated Element with this callback.
+     * Obtain a reference to the DOM Element with this callback.
      * @param element
      */
     $ref?: (element: Element) => void;
@@ -10,8 +10,8 @@ type ElementAttrs = {
      */
     style?: Partial<CSSStyleDeclaration>;
     /**
-     * A DOM string map of data attribute properties that will be attached to the
-     * element. The properties are expected to be in camelCase.
+     * A DOM string map of custom data attribute properties set on the element.
+     * The properties are expected to be in camelCase.
      */
     dataset?: HTMLOrSVGElement['dataset'];
     /**
@@ -23,7 +23,8 @@ type ElementAttrs = {
 type TemplateLiteralArgIndex = number;
 type TaggedArgsMap = Map<TemplateLiteralArgIndex, Node | ElementAttrs>;
 /**
- * Parses HTML template.
+ * Parses an HTML template.
+ * @internal
  * @param htmlStrings Template literal HTML strings.
  * @param templateArgs Template literal interpolated values.
  */
@@ -33,11 +34,12 @@ declare const parseTemplate: (htmlStrings: TemplateStringsArray, templateArgs: (
 };
 /**
  * Interpolate parsed HTML template literal with template literal arguments.
- * @param args Parsed and tagged HTML.
+ * @internal
+ * @param args Parsed and tagged HTML attributes or nodes.
  */
 declare const interpolate: ({ taggedTemplate, taggedArgs, }: ReturnType<typeof parseTemplate>) => Node | DocumentFragment;
 /**
- * Parse HTML template literal.
+ * Parses an HTML template.
  * @param htmlStrings HTML template literal
  * @param templateArgs Interpolated HTML template literal values.
  */

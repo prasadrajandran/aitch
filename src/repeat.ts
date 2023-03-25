@@ -44,7 +44,7 @@ export const repeat = <ITEM, ELEMENT extends Element>({
   ref,
   key: keyValueCallback = (args) => String(args.key),
   keyName = 'data-h-repeat-key',
-}: HRepeatParams<ITEM, ELEMENT>) => {
+}: HRepeatParams<ITEM, ELEMENT>): void => {
   const entries = Array.isArray(items)
     ? items.entries()
     : items instanceof Map

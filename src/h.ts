@@ -1,6 +1,6 @@
 type ElementAttrs = {
   /**
-   * Obtain a reference to the instantiated Element with this callback.
+   * Obtain a reference to the DOM Element with this callback.
    * @param element
    */
   $ref?: (element: Element) => void;
@@ -10,8 +10,8 @@ type ElementAttrs = {
    */
   style?: Partial<CSSStyleDeclaration>;
   /**
-   * A DOM string map of data attribute properties that will be attached to the
-   * element. The properties are expected to be in camelCase.
+   * A DOM string map of custom data attribute properties set on the element.
+   * The properties are expected to be in camelCase.
    */
   dataset?: HTMLOrSVGElement['dataset'];
   /**
@@ -26,7 +26,7 @@ type TemplateLiteralArgIndex = number;
 type TaggedArgsMap = Map<TemplateLiteralArgIndex, Node | ElementAttrs>;
 
 /**
- * Template literal attribute/node argument attribute marker.
+ * Template literal attribute/node argument marker.
  */
 const TAGGED_ATTR_NAME = 'data-FHF7Sj5kD1S';
 
@@ -43,7 +43,8 @@ const makeTaggedAttr = (i: number): string => `${TAGGED_ATTR_NAME}="${i}"`;
 const makeTaggedNode = (i: number): string => `<i ${makeTaggedAttr(i)}></i>`;
 
 /**
- * Parses HTML template.
+ * Parses an HTML template.
+ * @internal
  * @param htmlStrings Template literal HTML strings.
  * @param templateArgs Template literal interpolated values.
  */
@@ -69,8 +70,8 @@ const parseTemplate = (
       const arg = templateArgs[argIndex];
       const argType = typeof arg;
       // This check is meant to guard against honest mistakes not scenarios
-      // where the user is trying to intentionally pass a value off as a plain
-      // object, so it does not have to be exhaustive.
+      // where the user is deliberately trying pass a value off as a plain
+      // object.
       const isPlainObject =
         arg &&
         (arg.constructor === Object || Object.getPrototypeOf(arg) === null);
@@ -101,7 +102,7 @@ const parseTemplate = (
     //   <p>Hello</p>
     // `
     // "container.childNodes.length" > 1 even though the only relevant node in
-    // that string is the "div" element.
+    // that string is the "p" element.
     .trim();
 
   return {
@@ -112,7 +113,8 @@ const parseTemplate = (
 
 /**
  * Interpolate parsed HTML template literal with template literal arguments.
- * @param args Parsed and tagged HTML.
+ * @internal
+ * @param args Parsed and tagged HTML attributes or nodes.
  */
 const interpolate = ({
   taggedTemplate,
@@ -189,7 +191,7 @@ const interpolate = ({
 };
 
 /**
- * Parse HTML template literal.
+ * Parses an HTML template.
  * @param htmlStrings HTML template literal
  * @param templateArgs Interpolated HTML template literal values.
  */

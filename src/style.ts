@@ -3,7 +3,7 @@ type StyleRules = {
 };
 
 /**
- * Create CSS style sheet rules given a JavaScript object.
+ * Create CSS styles given a plain JavaScript object.
  * @param rules CSS rules.
  */
 export const style = (rules: StyleRules): string => {
