@@ -1,6 +1,6 @@
 {
   "name": "@prsd/aitch",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "description": "HTML templating in JavaScript",
   "keywords": [
     "h.js",
@@ -27,7 +27,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "npm run prettier-fix && npm run eslint && npm run check-types && npm run build-src && npm run build-dts && npm test",
+    "build": "npm install && npm run prettier-fix && npm run eslint && npm run check-types && npm run build-src && npm run build-dts && npm test",
     "build-dts": "tsc --declaration --emitDeclarationOnly",
     "build-src": "node ./build.js",
     "build-src-watch": "node ./build.js --watch",
