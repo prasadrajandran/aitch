@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./logo.svg" alt="aitch logo">
+</p>
+
 # aitch
 
 Easily create HTML templates in pure JavaScript:
