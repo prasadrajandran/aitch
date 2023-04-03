@@ -69,7 +69,7 @@ const createElementCallback = () => {
     expect(Number(key)).toEqual(index);
     expect(typeof id).toEqual('string');
     expect(typeof name).toEqual('string');
-    return h/*html*/ `<div>${id}<br/>${name}</div>`;
+    return h/*html*/ `<div>${id}<br/>${name}</div>`.content;
   });
 };
 
@@ -119,7 +119,7 @@ describe('repeat()', () => {
 
   test('Accepts maps, sets, arrays, and objects and only container, items, and element are required', () => {
     [itemsArr, itemsObj, itemsMap, itemsSet].forEach((items) => {
-      const container = h/*html*/ `<div></div>`;
+      const container = h/*html*/ `<div></div>`.content;
       const element = createElementCallback();
 
       repeat({
@@ -176,7 +176,7 @@ describe('repeat()', () => {
 
   test('Can change key value', () => {
     [itemsArr, itemsObj, itemsMap, itemsSet].forEach((items) => {
-      const container = h/*html*/ `<div></div>`;
+      const container = h/*html*/ `<div></div>`.content;
       const element = createElementCallback();
 
       repeat({
@@ -234,7 +234,7 @@ describe('repeat()', () => {
 
   test('Can change key value and key name', () => {
     [itemsArr, itemsObj, itemsMap, itemsSet].forEach((items) => {
-      const container = h/*html*/ `<div></div>`;
+      const container = h/*html*/ `<div></div>`.content;
       const element = createElementCallback();
 
       repeat({
@@ -293,7 +293,7 @@ describe('repeat()', () => {
 
   test('Calls ref() on every item', () => {
     [itemsArr, itemsObj, itemsMap, itemsSet].forEach((items) => {
-      const container = h/*html*/ `<div></div>`;
+      const container = h/*html*/ `<div></div>`.content;
       const element = createElementCallback();
       const ref = createRefCallback();
 
@@ -353,7 +353,7 @@ describe('repeat()', () => {
 
   test('Does not render nodes if their keys have not changed', () => {
     [itemsArr, itemsObj, itemsMap, itemsSet].forEach((items) => {
-      const container = h/*html*/ `<div></div>`;
+      const container = h/*html*/ `<div></div>`.content;
       const element = createElementCallback();
       const firstCallNodes = [];
       const secondCallNodes = [];
@@ -382,16 +382,17 @@ describe('repeat()', () => {
 
   test('Removes entries that have been deleted and adds new entries that have been added', () => {
     [itemsArr, itemsObj, itemsMap, itemsSet].forEach((items) => {
-      const container = h/*html*/ `<div></div>`;
+      const container = h/*html*/ `<div></div>`.content;
       const item6 = createItem('X-29', 'Sheldon');
       const entries = addItem(removeItem(items, item1, item3), 6, item6);
 
       repeat({
         container,
         items: entries,
-        element: ({ item: { id, name } }) => h/*html*/ `
+        element: ({ item: { id, name } }) =>
+          h/*html*/ `
           <div>${id}<br/>${name}</div>
-        `,
+        `.content,
         key: ({ item: { id } }) => id,
         keyName: 'k',
       });
@@ -445,7 +446,7 @@ describe('repeat()', () => {
         <div>
           <div ${{ $ref: (el) => (innerContainer = el) }}></div>
         </div>
-      `;
+      `.content;
 
       expect(container).toBeInstanceOf(HTMLDivElement);
       expect(innerContainer).toBeInstanceOf(HTMLDivElement);

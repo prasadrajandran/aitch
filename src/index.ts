@@ -1,4 +1,4 @@
-import { h } from './h';
+import { h, $attr, $node } from './h';
 import { repeat } from './repeat';
 import { style } from './style';
-export { h, repeat, style };
+export { h, $attr, $node, repeat, style };
