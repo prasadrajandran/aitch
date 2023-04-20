@@ -1,9 +1,15 @@
-type ElementAttrs = {
-  /**
-   * Obtain a reference to the DOM Element with this callback.
-   * @param element
-   */
-  $ref?: (element: Element) => void;
+import { isPlainObject } from './helpers/is-plain-object';
+import { isDirective } from './helpers/is-directive';
+import { updateElementAttrs } from './helpers/update-element-attrs';
+import type {
+  DirectiveIdentifier,
+  DirectiveInstance,
+  DirectiveCallbackResultKey,
+  createDirective,
+  TemplateDirective,
+} from './helpers/create-directive';
+
+export type ElementAttrs = {
   /**
    * CSS inline styles for the Element. The properties are expected to be in
    * camelCase.
@@ -19,181 +25,44 @@ type ElementAttrs = {
    * Element.
    */
   [attr: string]: unknown;
-} & Partial<GlobalEventHandlers>;
+} & Partial<GlobalEventHandlers> &
+  Partial<ARIAMixin> &
+  Partial<InnerHTML> &
+  Partial<Node> &
+  Partial<Element>;
 
-type UpdatableArgKey = string;
+export type TemplateArgIndex = number;
 
-type UpdatableAttrsMap = Map<UpdatableArgKey, Element>;
-
-type UpdatableNodesMap = Map<UpdatableArgKey, Node>;
-
-type UpdatableItems = Record<UpdatableArgKey, ElementAttrs | string | Node>;
-
-/**
- * Template literal attribute/node argument marker.
- */
-const TAGGED_ATTR_NAME = 'data-FHF7Sj5kD1S';
-
-/**
- * Marks an element as having updatable attributes and properties.
- * @param key Unique key that identifies this element as having updatable
- *     attributes and properties.
- */
-export const $attr = (key: string) => (): { type: 'attr'; key: string } => ({
-  type: 'attr',
-  key,
-});
-
-/**
- * Marks a node as being updatable.
- * @param key Unique key that identifies this node has being updatable.
- */
-export const $node = (key: string) => (): { type: 'node'; key: string } => ({
-  type: 'node',
-  key,
-});
-
-type RefCallback = ReturnType<typeof $attr> | ReturnType<typeof $node>;
-
-type TemplateLiteralArgIndex = number;
+type TaggedAttrArg = string;
 
 type TaggedArgsMap = Map<
-  TemplateLiteralArgIndex,
-  Node | ElementAttrs | RefCallback
+  TemplateArgIndex,
+  Node | ElementAttrs | TemplateDirective
 >;
 
-/**
- * This check is meant to guard against honest mistakes not scenarios where the
- * user is deliberately trying pass a value off as a plain object.
- * @internal
- */
-const isPlainObject = (arg: unknown): boolean =>
-  Boolean(
-    arg && (arg.constructor === Object || Object.getPrototypeOf(arg) === null)
-  );
+// todo: make $repeat?
 
 /**
- * Make a template literal attribute argument marker.
+ * Tags a template attributes argument in the template.
  * @internal
  * @param i Template literal argument index.
  */
-const makeTaggedAttr = (i: number): string => `${TAGGED_ATTR_NAME}="${i}"`;
+const tagAttrsArg = (i: TemplateArgIndex): TaggedAttrArg =>
+  `data-FHF7Sj5kD1S-${i}`;
 
 /**
- * Make a template literal node argument marker.
+ * Tags a template node argument in the template.
  * @internal
  * @param i Template literal argument index.
  */
-const makeTaggedNode = (i: number): string =>
-  `<template ${makeTaggedAttr(i)}></template>`;
-
-/**
- * Replaces a node if `newContent` is not identical to `currentNode`.
- * @internal
- * @param currentNode Current node to update.
- * @param newContent New text content or a new node to replace `currentNode`
- *     with.
- */
-const replaceNode = (
-  currentNode: Text | Element,
-  newContent: string | Node
-): Node => {
-  let replacedNode: Node = currentNode;
-  const newNode =
-    typeof newContent === 'string' ? new Text(newContent) : newContent;
-  if (
-    !(
-      currentNode instanceof Text &&
-      newNode instanceof Text &&
-      currentNode.textContent === newNode.textContent
-    ) &&
-    currentNode !== newNode
-  ) {
-    currentNode.replaceWith(newNode as Node);
-    replacedNode = newNode;
-  }
-  return replacedNode;
-};
-
-const updateNode = (
-  node: Element,
-  attrs: ElementAttrs,
-  alreadyAppliedProps: Set<string>
-): Set<string> => {
-  // Clone set so that we can modify without introducing side effects.
-  const appliedProps = new Set(alreadyAppliedProps);
-
-  Object.entries(attrs).forEach(([attrName, attrValue]) => {
-    switch (attrName) {
-      case '$ref':
-        (attrValue as Required<ElementAttrs>['$ref'])(node);
-        break;
-      case 'style':
-        Object.entries(attrValue as Required<ElementAttrs>['style']).forEach(
-          ([stylePropName, stylePropValue]) => {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            node.style[stylePropName] = stylePropValue;
-          }
-        );
-        break;
-      case 'dataset':
-        Object.entries(attrValue as Required<ElementAttrs>['dataset']).forEach(
-          ([dataPropName, dataPropValue]) => {
-            (node as HTMLElement).dataset[dataPropName] = dataPropValue;
-          }
-        );
-        break;
-      default:
-        if (typeof attrValue === 'string' && !(attrName in node)) {
-          node.setAttribute(attrName, attrValue);
-        } else {
-          // This prevents us from constantly updating properties like
-          // "innerHTML" if they have not changed AND if they have been applied
-          // at least once. We apply props at least once regardless of the
-          // current value in the element because certain props are both a
-          // property and an attribute (e.g. "type" in HTMLButtonElement) so we
-          // want those values to show up in the HTML as an attribute
-          // (e.g. '<button type="submit">Submit</button>').
-          const attrHasBeenAppliedAtLeastOnce = appliedProps.has(attrName);
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          if (node[attrName] !== attrValue || !attrHasBeenAppliedAtLeastOnce) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            node[attrName] = attrValue;
-            appliedProps.add(attrName);
-          }
-        }
-    }
-  });
-
-  return appliedProps;
-};
-
-/**
- * Determines if the supplied `arg` is a valid RefCallback value.
- * @internal
- * @param arg Arg to check.
- */
-const isRefCallbackArgValid = (arg: RefCallback): boolean => {
-  try {
-    const { type, key } = arg();
-    return (
-      (type === 'attr' || type === 'node') &&
-      typeof key === 'string' &&
-      key.length > 1
-    );
-  } catch {
-    return false;
-  }
-};
+const tagNodeArg = (i: TemplateArgIndex): string =>
+  `<template ${tagAttrsArg(i)}></template>`;
 
 /**
  * Parses an HTML template.
  * @internal
  * @param htmlStrings Template literal HTML strings.
- * @param templateArgs Template literal interpolated values.
+ * @param templateArgs Template literal interpolated directiveValues.
  */
 const parse = (
   htmlStrings: TemplateStringsArray,
@@ -203,14 +72,13 @@ const parse = (
     | boolean
     | Node
     | ElementAttrs
-    | RefCallback
+    | TemplateDirective
   )[]
 ): {
   taggedTemplate: HTMLTemplateElement;
   taggedArgs: TaggedArgsMap;
 } => {
   const taggedArgs: TaggedArgsMap = new Map();
-  const updatableArgsSet = new Set<UpdatableArgKey>();
 
   // Intentionally using a `template` instead of something like a `div` as we
   // do not want any events from the elements to trigger while we're parsing the
@@ -232,29 +100,19 @@ const parse = (
         argType === 'boolean'
       ) {
         return `${htmlChunk}${arg}`;
-      } else if (
-        argType === 'function' &&
-        isRefCallbackArgValid(arg as RefCallback)
-      ) {
-        const { type, key } = (arg as RefCallback)();
-
-        if (updatableArgsSet.has(key)) {
-          throw new Error(`Duplicate attribute or node key found: "${key}"`);
-        }
-        updatableArgsSet.add(key);
-
-        taggedArgs.set(argIndex, arg as RefCallback);
-        if (type === 'attr') {
-          return `${htmlChunk}${makeTaggedAttr(argIndex)}`;
-        } else {
-          return `${htmlChunk}${makeTaggedNode(argIndex)}`;
-        }
       } else if (arg instanceof Node) {
         taggedArgs.set(argIndex, arg as Node);
-        return `${htmlChunk}${makeTaggedNode(argIndex)}`;
+        return `${htmlChunk}${tagNodeArg(argIndex)}`;
+      } else if (isDirective(arg)) {
+        taggedArgs.set(argIndex, arg);
+        return `${htmlChunk}${
+          arg.definition.type === 'attr'
+            ? tagAttrsArg(argIndex)
+            : tagNodeArg(argIndex)
+        }`;
       } else if (isPlainObject(arg)) {
-        taggedArgs.set(argIndex, arg as ElementAttrs);
-        return `${htmlChunk}${makeTaggedAttr(argIndex)}`;
+        taggedArgs.set(argIndex, arg);
+        return `${htmlChunk}${tagAttrsArg(argIndex)}`;
       } else {
         throw new Error(
           `Invalid template argument at position ${argIndex} ` +
@@ -287,64 +145,62 @@ const interpolate = ({
   taggedArgs,
 }: ReturnType<typeof parse>): {
   content: Node | DocumentFragment;
-  updatableAttrs: UpdatableAttrsMap;
-  updatableNodes: UpdatableNodesMap;
+  [directiveKey: DirectiveCallbackResultKey]: unknown;
 } => {
   const fragment = taggedTemplate.content.cloneNode(true) as DocumentFragment;
-  const updatableAttrs: UpdatableAttrsMap = new Map();
-  const updatableNodes: UpdatableNodesMap = new Map();
-  const processedTaggedArgs = new Set();
+  const directives = new Map<
+    DirectiveIdentifier,
+    {
+      callback: Parameters<typeof createDirective>[0]['callback'];
+      key: Parameters<typeof createDirective>[0]['key'];
+      instances: DirectiveInstance[];
+    }
+  >();
 
-  fragment.querySelectorAll(`[${TAGGED_ATTR_NAME}]`).forEach((node) => {
-    const argIndex = Number(node.getAttribute(TAGGED_ATTR_NAME) as string);
-    const arg = taggedArgs.get(argIndex) as Node | ElementAttrs | RefCallback;
+  taggedArgs.forEach((arg, argIndex) => {
+    const taggedAttr = tagAttrsArg(argIndex);
 
-    // Note: not deleting processed values from `taggedArgs` even though that
-    // is easier because that introduces a side effect.
-    processedTaggedArgs.add(argIndex);
+    const node = fragment.querySelector(`[${taggedAttr}]`);
+    if (!node) {
+      throw new Error(
+        `Unexpected template argument at position ${argIndex} ` +
+          `(zero-based numbering)`
+      );
+    }
 
-    node.removeAttribute(TAGGED_ATTR_NAME);
+    node.removeAttribute(taggedAttr);
 
     if (arg instanceof Node) {
       node.replaceWith(arg);
-    } else if (typeof arg === 'function') {
-      const { type, key } = arg();
-      if (type === 'node') {
-        updatableNodes.set(key, node);
-      } else {
-        updatableAttrs.set(key, node);
-      }
+    } else if (isDirective(arg)) {
+      const { identifier, args } = arg;
+      const { callback, key } = arg.definition;
+      const instances = directives.get(identifier)?.instances || [];
+      instances.push({ node, pos: argIndex, args });
+      directives.set(identifier, { callback, key, instances });
     } else {
-      updateNode(node, arg, new Set());
+      updateElementAttrs(node, arg as ElementAttrs);
     }
   });
 
-  if (processedTaggedArgs.size !== taggedArgs.size) {
-    const indices: number[] = [];
-    for (const argIndex of taggedArgs.keys()) {
-      if (!processedTaggedArgs.has(argIndex)) {
-        indices.push(argIndex);
-      }
-    }
-    const plural = indices.length > 1 ? 's' : '';
-    throw new Error(
-      `Unexpected template argument${plural} at position${plural} ${
-        '' + plural ? `[${indices.join(', ')}]` : indices[0]
-      } (zero-based numbering)`
-    );
-  }
-
-  return {
+  const results: { content: Node } & Record<string, unknown> = {
     content:
       fragment.childNodes.length === 1
         ? (fragment.childNodes[0] as Node)
         : fragment,
-    updatableNodes,
-    updatableAttrs,
   };
+
+  directives.forEach(({ key, callback, instances }) => {
+    const callbackResults = callback(instances);
+    if (key) {
+      results[key] = callbackResults;
+    }
+  });
+
+  return results;
 };
 
-export const h = <UPDATABLE extends UpdatableItems = UpdatableItems>(
+export const h = (
   htmlStrings: TemplateStringsArray,
   ...templateArgs: (
     | string
@@ -352,40 +208,8 @@ export const h = <UPDATABLE extends UpdatableItems = UpdatableItems>(
     | boolean
     | Node
     | ElementAttrs
-    | RefCallback
+    | TemplateDirective
   )[]
-): {
-  content: ReturnType<typeof interpolate>['content'];
-  update: (data: UPDATABLE) => void;
-} => {
-  const { content, updatableNodes, updatableAttrs } = interpolate(
-    parse(htmlStrings, templateArgs)
-  );
-
-  const appliedNodeProps = new Map<UpdatableArgKey, Set<string>>();
-  for (const key of updatableAttrs.keys()) {
-    appliedNodeProps.set(key, new Set());
-  }
-
-  const update = (data: UPDATABLE) => {
-    Object.entries(data).forEach(([key, value]) => {
-      if (updatableNodes.has(key)) {
-        const currentNode = updatableNodes.get(key) as Text | Element;
-        const newNode = replaceNode(
-          currentNode,
-          value as string | Node | Element
-        );
-        updatableNodes.set(key, newNode);
-      } else if (updatableAttrs.has(key)) {
-        const appliedProps = updateNode(
-          updatableAttrs.get(key) as Element,
-          value as unknown as ElementAttrs,
-          appliedNodeProps.get(key) as Set<string>
-        );
-        appliedNodeProps.set(key, appliedProps);
-      }
-    });
-  };
-
-  return { content, update };
+): ReturnType<typeof interpolate> => {
+  return interpolate(parse(htmlStrings, templateArgs));
 };
