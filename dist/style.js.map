@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../src/style.ts"],
-  "sourcesContent": ["type StyleRules = {\n  [selector: string]: Partial<CSSStyleDeclaration> | StyleRules;\n};\n\n/**\n * Create CSS styles given a plain JavaScript object.\n * @param rules CSS rules.\n */\nexport const style = (rules: StyleRules): string => {\n  return Object.entries(rules)\n    .map(([selector, styles]) => {\n      const cssText = Object.entries(styles).reduce((items, [name, value]) => {\n        if (typeof value === 'string') {\n          const snakeCasedName = name.replace(\n            /[A-Z]/g,\n            (c) => `-${c.toLowerCase()}`\n          );\n          return (items += `${snakeCasedName}:${value};`);\n        }\n        return style(styles as StyleRules);\n      }, '') as string;\n      return `${selector}{${cssText}}`;\n    })\n    .join('');\n};\n"],
-  "mappings": "AAQO,MAAMA,EAASC,GACb,OAAO,QAAQA,CAAK,EACxB,IAAI,CAAC,CAACC,EAAUC,CAAM,IAAM,CAC3B,MAAMC,EAAU,OAAO,QAAQD,CAAM,EAAE,OAAO,CAACE,EAAO,CAACC,EAAMC,CAAK,IAAM,CACtE,GAAI,OAAOA,GAAU,SAAU,CAC7B,MAAMC,EAAiBF,EAAK,QAC1B,SACCG,GAAM,IAAIA,EAAE,YAAY,GAC3B,EACA,OAAQJ,GAAS,GAAGG,KAAkBD,KAExC,OAAOP,EAAMG,CAAoB,CACnC,EAAG,EAAE,EACL,MAAO,GAAGD,KAAYE,IACxB,CAAC,EACA,KAAK,EAAE",
-  "names": ["style", "rules", "selector", "styles", "cssText", "items", "name", "value", "snakeCasedName", "c"]
-}

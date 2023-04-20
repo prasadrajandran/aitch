@@ -1,9 +1,5 @@
-type ElementAttrs = {
-    /**
-     * Obtain a reference to the DOM Element with this callback.
-     * @param element
-     */
-    $ref?: (element: Element) => void;
+import type { DirectiveCallbackResultKey, TemplateDirective } from './helpers/create-directive';
+export type ElementAttrs = {
     /**
      * CSS inline styles for the Element. The properties are expected to be in
      * camelCase.
@@ -19,16 +15,16 @@ type ElementAttrs = {
      * Element.
      */
     [attr: string]: unknown;
-} & Partial<GlobalEventHandlers>;
-type TemplateLiteralArgIndex = number;
-type TaggedArgsMap = Map<TemplateLiteralArgIndex, Node | ElementAttrs>;
+} & Partial<GlobalEventHandlers> & Partial<ARIAMixin> & Partial<InnerHTML> & Partial<Node> & Partial<Element>;
+export type TemplateArgIndex = number;
+type TaggedArgsMap = Map<TemplateArgIndex, Node | ElementAttrs | TemplateDirective>;
 /**
  * Parses an HTML template.
  * @internal
  * @param htmlStrings Template literal HTML strings.
- * @param templateArgs Template literal interpolated values.
+ * @param templateArgs Template literal interpolated directiveValues.
  */
-declare const parseTemplate: (htmlStrings: TemplateStringsArray, templateArgs: (string | number | boolean | ElementAttrs | Node)[]) => {
+declare const parse: (htmlStrings: TemplateStringsArray, templateArgs: (string | number | boolean | Node | ElementAttrs | TemplateDirective)[]) => {
     taggedTemplate: HTMLTemplateElement;
     taggedArgs: TaggedArgsMap;
 };
@@ -37,11 +33,9 @@ declare const parseTemplate: (htmlStrings: TemplateStringsArray, templateArgs: (
  * @internal
  * @param args Parsed and tagged HTML attributes or nodes.
  */
-declare const interpolate: ({ taggedTemplate, taggedArgs, }: ReturnType<typeof parseTemplate>) => Node | DocumentFragment;
-/**
- * Parses an HTML template.
- * @param htmlStrings HTML template literal
- * @param templateArgs Interpolated HTML template literal values.
- */
-export declare const h: (htmlStrings: TemplateStringsArray, ...templateArgs: (string | number | boolean | ElementAttrs | Node)[]) => ReturnType<typeof interpolate>;
+declare const interpolate: ({ taggedTemplate, taggedArgs, }: ReturnType<typeof parse>) => {
+    [directiveKey: string]: unknown;
+    content: Node | DocumentFragment;
+};
+export declare const h: (htmlStrings: TemplateStringsArray, ...templateArgs: (string | number | boolean | Node | ElementAttrs | TemplateDirective)[]) => ReturnType<typeof interpolate>;
 export {};
