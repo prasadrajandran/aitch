@@ -1,4 +1,5 @@
 import { h } from '../dist';
+import { $ref } from '../dist/directives';
 
 describe('h()', () => {
   test('Returns root node instance directly if template contains a single root node', () => {
@@ -73,18 +74,18 @@ describe('h()', () => {
       <form>
         <input
           type="number"
-          min="${min}" ${{ $ref: (el) => (input = el) }}
+          min="${min}" ${$ref((el) => (input = el))}
         >
         <a
           href="${href}"
-          ${{ $ref: (el) => (anchor = el) }}
+          ${$ref((el) => (anchor = el))}
         >
           Link 1
         </a>
         <div
           role="button"
           aria-pressed="${ariaPressed}"
-          ${{ $ref: (el) => (divBtn = el) }}
+          ${$ref((el) => (divBtn = el))}
         >
           Button 1
         </div>
@@ -108,7 +109,11 @@ describe('h()', () => {
     h/*html*/ `
       <form>
         <input type="text">
-        <button type="submit" ${{ onclick, $ref: (el) => (btn = el) }}>
+        <button
+          type="submit"
+          ${{ onclick }}
+          ${$ref((el) => (btn = el))}
+        >
           Submit
         </button>
       </form>
@@ -125,7 +130,7 @@ describe('h()', () => {
     const type = 'number';
     const min = 50;
     const input = h/*html*/ `
-      <input ${{ type, min }}>
+      <input ${{ type, min, disabled: '' }}>
     `.content;
 
     expect(input).toBeInstanceOf(HTMLInputElement);
@@ -160,7 +165,7 @@ describe('h()', () => {
       longPropertyName: 0,
     };
     const div = h/*html*/ `
-      <div ${{ role, dataset }}>Submit</div>
+      <div ${{ '[role]': role, dataset }}>Submit</div>
     `.content;
 
     expect(div).toBeInstanceOf(HTMLDivElement);
@@ -239,7 +244,7 @@ describe('h()', () => {
     });
   });
 
-  test('Throws error if template argument(s) are in unexpected positions', () => {
+  test('Throws error if template argument(s) are in unexpected position(s)', () => {
     expect(
       () => h/*html*/ `
       <div id="${new Text('something')}"></div>
@@ -270,7 +275,7 @@ describe('h()', () => {
       <button data-index="${2}">${{ type: 'button' }}</button>
     `
     ).toThrowError(
-      'Unexpected template arguments at positions [1, 3] (zero-based numbering)'
+      'Unexpected template argument at position 1 (zero-based numbering)'
     );
   });
 
@@ -280,7 +285,7 @@ describe('h()', () => {
     const input3 = h/*html*/ `Age: <input type="number">`.content;
     const input4 = h/*html*/ `Address: <input type="text">`.content;
     const btnProps = {
-      type: 'submit',
+      '[type]': 'submit',
       style: {
         padding: '0 0 0 50px',
         fontFamily: 'Arial',
