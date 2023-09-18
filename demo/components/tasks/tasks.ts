@@ -31,16 +31,13 @@ const cssScope = createStyle({
   },
   '.task-btn': {
     border: 'none',
-    borderRadius: '30px',
+    borderRadius: '50px',
+    padding: '6px',
     margin: '0',
     flexBasis: '36px',
   },
   '.status-btn': {
-    border: 'none',
-    borderRadius: '30px',
-    margin: '0',
     marginRight: '10px',
-    flexBasis: '36px',
   },
   '.task-content': {
     flexBasis: '100%',
@@ -80,6 +77,8 @@ export const TasksElement = ({
       })}
     ></ol>
   `;
+
+  tpl.$update();
 
   return tpl;
 };

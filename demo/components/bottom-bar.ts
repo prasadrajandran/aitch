@@ -1,7 +1,7 @@
 import type { getViewMode, onViewModeUpdate, viewModeUpdate } from '../state';
 import { html } from '../../dist/index';
 import { _merge, _ref } from '../../dist/directives';
-import { Btn } from './btn';
+import { Btn } from '../fn-components/btn';
 
 type Props = {
   getViewMode: typeof getViewMode;
@@ -52,6 +52,8 @@ export const BottomBar = ({
       </div>
     </div>
   `;
+
+  tpl.$update();
 
   return tpl;
 };

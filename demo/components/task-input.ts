@@ -1,8 +1,8 @@
 import type { Task } from '../state';
 import type { RefDirective } from '../../dist/directives/ref';
 import { html } from '../../dist/index';
-import { Input } from './input';
-import { Btn } from './btn';
+import { Input } from '../fn-components/input';
+import { Btn } from '../fn-components/btn';
 
 type Directives = RefDirective<{ input: HTMLInputElement }>;
 
@@ -33,6 +33,8 @@ export const TaskInput = ({ addTask }: Props) => {
       })}
     </div>
   </form>`;
+
+  tpl.$update();
 
   return tpl;
 };

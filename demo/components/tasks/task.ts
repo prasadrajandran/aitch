@@ -4,8 +4,9 @@ import type { TextDirective } from '../../../dist/directives/text';
 import type { deleteTask, getViewMode, updateTask } from '../../state';
 import { _ref, _text } from '../../../dist/directives';
 import { html } from '../../../dist/index';
-import { Btn } from '../btn';
-import { Input } from '../input';
+import { LifecycleCallbacks } from '../../helpers/lifecycle-callbacks';
+import { Btn } from '../../fn-components/btn';
+import { Input } from '../../fn-components/input';
 
 export type TaskProps = {
   getViewMode: typeof getViewMode;
@@ -21,30 +22,6 @@ type TaskDirectives = RefDirective<{
 }> &
   TextDirective<'task'>;
 
-interface DomWatcherProps {
-  connected?: () => void;
-  disconnected?: () => void;
-}
-
-class DomWatcher extends HTMLElement {
-  props: DomWatcherProps = {};
-  constructor(props = {}) {
-    super();
-    this.props = props;
-  }
-
-  connectedCallback() {
-    this.props.connected?.();
-    console.warn('CONNECTED');
-  }
-  disconnectedCallback() {
-    this.props.disconnected?.();
-    console.warn('REMOVED');
-  }
-}
-
-customElements.define('x-watcher', DomWatcher);
-
 export const TaskElement = ({
   getViewMode,
   getTask,
@@ -55,10 +32,8 @@ export const TaskElement = ({
   let viewMode = getViewMode();
   let task = getTask();
   let isEditing = false;
-  let cancelOnViewModeUpdateListener: ReturnType<
-    typeof onViewModeUpdate
-  > | null = null;
-  let cancelOnTaskUpdateListener: ReturnType<typeof onTaskUpdate> | null = null;
+  let cancelOnViewModeUpdateListener: (() => void) | null = null;
+  let cancelOnTaskUpdateListener: (() => void) | null | null = null;
 
   const enableEditing = () => {
     isEditing = true;
@@ -76,18 +51,15 @@ export const TaskElement = ({
     tpl.$update();
   };
 
-  const watcher = new DomWatcher({
+  const watcher = new LifecycleCallbacks({
     connected: () => {
       cancelOnViewModeUpdateListener?.();
       cancelOnTaskUpdateListener?.();
-
       cancelOnViewModeUpdateListener = onViewModeUpdate((newViewMode) => {
         viewMode = newViewMode;
         tpl.$update();
       });
-
       cancelOnTaskUpdateListener = onTaskUpdate((updatedTask) => {
-        console.warn(updatedTask.id);
         if (task.id === updatedTask.id) {
           task = updatedTask;
           tpl.task = task.value;
@@ -124,8 +96,9 @@ export const TaskElement = ({
       ${watcher}
       <form class="task-form" ${{ onsubmit: (e) => e.preventDefault() }}>
         ${Btn({
+          size: 'sm',
           icon: 'check-circle',
-          className: 'status-btn',
+          className: 'task-btn status-btn',
           onclick: () => {
             task.complete = !task.complete;
             updateTask(task);
@@ -137,6 +110,8 @@ export const TaskElement = ({
                 task.complete ? ' not ' : ' '
               }done`,
             }),
+          updateIcon: () =>
+            task.complete ? 'check-circle-fill' : 'check-circle',
         })}
 
         <div
@@ -172,6 +147,7 @@ export const TaskElement = ({
         </div>
 
         ${Btn({
+          size: 'sm',
           icon: 'pencil',
           className: 'task-btn',
           onclick: enableEditing,
@@ -182,6 +158,7 @@ export const TaskElement = ({
           },
         })}
         ${Btn({
+          size: 'sm',
           type: 'submit',
           icon: 'save',
           className: 'task-btn',
@@ -203,6 +180,8 @@ export const TaskElement = ({
       </form>
     </li>
   `;
+
+  tpl.$update();
 
   return tpl;
 };

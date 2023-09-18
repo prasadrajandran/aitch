@@ -19,6 +19,7 @@ type Props = TemplateAttrsExp<{
   icon?: string;
   ref?: string;
   update?: (ref: ElementRef) => void;
+  updateIcon?: () => string;
   child?: string | Node | ParsedTemplate;
 }>;
 
@@ -28,11 +29,14 @@ export const Btn = ({
   icon,
   ref,
   update,
-  child,
+  updateIcon,
+  child = '',
   ...props
 }: Props = {}) => {
   const btnSize = size ? `btn-${size}` : '';
   const btnClassType = `btn-outline-${classType || 'primary'}`;
+  const iconElement = icon ? Icon(icon, updateIcon || false) : '';
+
   return _merge(
     html<HTMLButtonElement>/* html */ `
       <button
@@ -42,9 +46,9 @@ export const Btn = ({
         ${ref ? _ref(ref) : ''}
         ${update || ''}
       >
-        ${icon ? Icon(icon) : ''} ${child || ''}
+        ${iconElement} ${child}
       </button>
     `,
-    { update: true }
+    { callbacks: true }
   );
 };
