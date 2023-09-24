@@ -5,7 +5,6 @@ import type {
   getTask,
   getTasks,
   onTaskUpdate,
-  onTasksUpdate,
   onViewModeUpdate,
 } from '../../state';
 import { html } from '../../../dist/index';
@@ -17,7 +16,6 @@ type TasksProps = {
   getViewMode: () => ViewMode;
   getTasks: typeof getTasks;
   getTask: typeof getTask;
-  onTasksUpdate: typeof onTasksUpdate;
   onTaskUpdate: typeof onTaskUpdate;
   onViewModeUpdate: typeof onViewModeUpdate;
 } & Omit<TaskProps, 'getTask'>;
@@ -37,7 +35,8 @@ const cssScope = createStyle({
     flexBasis: '36px',
   },
   '.status-btn': {
-    marginRight: '10px',
+    marginLeft: '11px',
+    marginRight: '25px',
   },
   '.task-content': {
     flexBasis: '100%',
@@ -51,16 +50,17 @@ export const TasksElement = ({
   updateTask,
   deleteTask,
   onTaskUpdate,
-  onTasksUpdate,
   onViewModeUpdate,
 }: TasksProps) => {
-  onTasksUpdate((tasks) => {
-    tpl.tasks = tasks;
+  onTaskUpdate((tasks) => {
+    if (tasks.some(({ operation }) => operation !== 'update')) {
+      tpl.tasks = getTasks();
+    }
   });
 
   const tpl = html<DocumentFragment, TasksDirectives>/* html */ `
     <ol
-      class="list-group text-start"
+      class="list-group list-group-flush text-start"
       ${{ className: cssScope }}
       ${_list({
         name: 'tasks',
@@ -78,7 +78,7 @@ export const TasksElement = ({
     ></ol>
   `;
 
-  tpl.$update();
+  tpl.$callbacks.run();
 
   return tpl;
 };

@@ -6,7 +6,7 @@ import { Icon } from './icon';
 
 type Props = TemplateAttrsExp<{
   size?: 'sm' | 'lg';
-  classType?:
+  variant?:
     | 'primary'
     | 'secondary'
     | 'success'
@@ -25,7 +25,7 @@ type Props = TemplateAttrsExp<{
 
 export const Btn = ({
   size,
-  classType,
+  variant,
   icon,
   ref,
   update,
@@ -34,7 +34,7 @@ export const Btn = ({
   ...props
 }: Props = {}) => {
   const btnSize = size ? `btn-${size}` : '';
-  const btnClassType = `btn-outline-${classType || 'primary'}`;
+  const btnClassType = `btn-outline-${variant || 'primary'}`;
   const iconElement = icon ? Icon(icon, updateIcon || false) : '';
 
   return _merge(

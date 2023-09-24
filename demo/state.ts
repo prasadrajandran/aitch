@@ -1,5 +1,7 @@
 import { createPubSub } from './helpers/create-pub-sub';
 
+type TaskUpdate = { task: Task; operation: 'add' | 'update' | 'delete' };
+
 export type Task = { id: string; complete: boolean; value: string };
 
 export type Tasks = (typeof state)['tasks'];
@@ -11,17 +13,17 @@ const state = {
   tasks: new Map<Task['id'], Task>(),
 };
 
-export const [tasksUpdate, onTasksUpdate] =
-  createPubSub<(typeof state)['tasks']>();
-export const [taskUpdate, onTaskUpdate] = createPubSub<Task>();
+export const [taskUpdate, onTaskUpdate] = createPubSub<TaskUpdate[]>();
 export const [viewModeUpdate, onViewModeUpdate] = createPubSub<ViewMode>();
 
 const commitTasks = () => {
-  const taskObj: Record<Task['id'], Task> = {};
-  state.tasks.forEach((v, k) => {
-    taskObj[k] = v;
+  queueMicrotask(() => {
+    const taskObj: Record<Task['id'], Task> = {};
+    state.tasks.forEach((v, k) => {
+      taskObj[k] = v;
+    });
+    localStorage.setItem('tasks', JSON.stringify(taskObj));
   });
-  localStorage.setItem('tasks', JSON.stringify(taskObj));
 };
 
 export const retrieveTasks = () => {
@@ -32,32 +34,49 @@ export const retrieveTasks = () => {
   Object.entries(data).forEach(([k, v]) => {
     state.tasks.set(k, v);
   });
-  tasksUpdate(state.tasks);
 };
 
 export const getTasks = () => state.tasks;
 
-export const addTask = (value: Task['value']) => {
-  const task = { id: crypto.randomUUID(), complete: false, value };
-  state.tasks.set(task.id, task);
-  tasksUpdate(state.tasks);
+export const addTask = (values: Task['value'][]) => {
+  const addedTasks = values.reduce((tasks, value) => {
+    if (value.trim()) {
+      const task = { id: crypto.randomUUID(), complete: false, value };
+      state.tasks.set(task.id, task);
+      tasks.push({ task, operation: 'add' });
+    }
+    return tasks;
+  }, [] as TaskUpdate[]);
+  taskUpdate(addedTasks);
   commitTasks();
 };
 
-export const deleteTask = (taskId: Task['id']) => {
-  state.tasks.delete(taskId);
-  tasksUpdate(state.tasks);
+export const deleteTask = (taskIds: Task['id'][]) => {
+  const deletedTasks = taskIds.reduce((tasks, taskId) => {
+    const task = state.tasks.get(taskId);
+    if (task) {
+      state.tasks.delete(taskId);
+      tasks.push({ task, operation: 'delete' });
+    }
+    return tasks;
+  }, [] as TaskUpdate[]);
+  taskUpdate(deletedTasks);
   commitTasks();
 };
 
-export const updateTask = (task: Task) => {
-  if (!task.value.trim()) {
-    deleteTask(task.id);
-  } else {
-    state.tasks.set(task.id, task);
-    taskUpdate(task);
-    commitTasks();
-  }
+export const updateTask = (tasks: Task[]) => {
+  const updatedTasks = tasks.reduce((t, task) => {
+    if (task.value.trim()) {
+      state.tasks.set(task.id, task);
+      t.push({ task, operation: 'update' });
+    } else {
+      state.tasks.delete(task.id);
+      t.push({ task, operation: 'delete' });
+    }
+    return t;
+  }, [] as TaskUpdate[]);
+  taskUpdate(updatedTasks);
+  commitTasks();
 };
 
 export const getTask = (taskId: Task['id']) => {

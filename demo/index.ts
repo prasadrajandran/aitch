@@ -1,9 +1,8 @@
 import { html } from '../dist/index';
-import { _ref } from '../dist/directives';
-import { TasksElement } from './components/tasks/tasks';
-import { TaskInput } from './components/task-input';
-import { Heading } from './components/heading';
-import { BottomBar } from './components/bottom-bar';
+import { TasksElement } from './layout-components/tasks/tasks';
+import { TaskInput } from './layout-components/task-input';
+import { Heading } from './layout-components/heading';
+import { BottomBar } from './layout-components/bottom-bar';
 import {
   addTask,
   deleteTask,
@@ -11,7 +10,6 @@ import {
   getTasks,
   getViewMode,
   onTaskUpdate,
-  onTasksUpdate,
   onViewModeUpdate,
   retrieveTasks,
   retrieveViewMode,
@@ -19,24 +17,30 @@ import {
   updateViewMode,
 } from './state';
 
-const template = html`
-  <div class="container text-center" style="max-width: 800px" ${_ref('ctn')}>
-    ${Heading()} ${TaskInput({ addTask })}
-    ${TasksElement({
-      getViewMode,
-      getTasks,
-      getTask,
-      updateTask,
-      deleteTask,
-      onTaskUpdate,
-      onTasksUpdate,
-      onViewModeUpdate,
-    })}
-    ${BottomBar({ getViewMode, updateViewMode, onViewModeUpdate })}
-  </div>
-`;
-
-retrieveViewMode(); // Run this before retrieving tasks.
+retrieveViewMode();
 retrieveTasks();
 
-document.body.append(template.$node);
+document.body.append(
+  html`
+    <div class="container text-center" style="max-width: 800px">
+      ${Heading()} ${TaskInput({ getTasks, addTask, updateTask, onTaskUpdate })}
+      ${TasksElement({
+        getViewMode,
+        getTasks,
+        getTask,
+        updateTask,
+        deleteTask,
+        onTaskUpdate,
+        onViewModeUpdate,
+      })}
+      ${BottomBar({
+        getTasks,
+        getViewMode,
+        deleteTask,
+        updateViewMode,
+        onViewModeUpdate,
+        onTaskUpdate,
+      })}
+    </div>
+  `.$node
+);

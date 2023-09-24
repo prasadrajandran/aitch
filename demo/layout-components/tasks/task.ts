@@ -1,12 +1,13 @@
-import { Task, onTaskUpdate, onViewModeUpdate } from '../../state';
 import type { RefDirective } from '../../../dist/directives/ref';
 import type { TextDirective } from '../../../dist/directives/text';
 import type { deleteTask, getViewMode, updateTask } from '../../state';
+import { Task, onTaskUpdate, onViewModeUpdate } from '../../state';
 import { _ref, _text } from '../../../dist/directives';
 import { html } from '../../../dist/index';
 import { LifecycleCallbacks } from '../../helpers/lifecycle-callbacks';
-import { Btn } from '../../fn-components/btn';
-import { Input } from '../../fn-components/input';
+import { Btn } from '../../components/btn';
+import { Input } from '../../components/input';
+import { Listeners } from '../../helpers/listeners';
 
 export type TaskProps = {
   getViewMode: typeof getViewMode;
@@ -29,51 +30,53 @@ export const TaskElement = ({
   deleteTask,
   onViewModeUpdate,
 }: TaskProps) => {
+  const listeners = new Listeners();
   let viewMode = getViewMode();
   let task = getTask();
   let isEditing = false;
-  let cancelOnViewModeUpdateListener: (() => void) | null = null;
-  let cancelOnTaskUpdateListener: (() => void) | null | null = null;
 
   const enableEditing = () => {
     isEditing = true;
-    tpl.$update();
+    tpl.$callbacks.run();
   };
 
   const updateTaskValue = () => {
     // Prevents this from firing more than once because it's attached to the
-    // button and on the input.
+    // button and the update task input element.
     if (!isEditing) return;
 
     isEditing = false;
     task.value = tpl.taskInput.node.value;
-    updateTask(task);
-    tpl.$update();
+    updateTask([task]);
+    tpl.$callbacks.run();
   };
 
   const watcher = new LifecycleCallbacks({
     connected: () => {
-      cancelOnViewModeUpdateListener?.();
-      cancelOnTaskUpdateListener?.();
-      cancelOnViewModeUpdateListener = onViewModeUpdate((newViewMode) => {
-        viewMode = newViewMode;
-        tpl.$update();
-      });
-      cancelOnTaskUpdateListener = onTaskUpdate((updatedTask) => {
-        if (task.id === updatedTask.id) {
-          task = updatedTask;
-          tpl.task = task.value;
-          tpl.$update();
-        }
-      });
+      listeners.cancel();
+      listeners.push(
+        onViewModeUpdate((newViewMode) => {
+          viewMode = newViewMode;
+          tpl.$callbacks.run();
+        })
+      );
+      listeners.push(
+        onTaskUpdate((tasks) => {
+          const updatedTask = tasks.find(({ task: { id } }) => task.id === id);
+          if (updatedTask) {
+            task = updatedTask.task;
+            tpl.task = task.value;
+            tpl.$callbacks.run();
+          }
+        })
+      );
 
       task = getTask();
       tpl.task = task.value;
-      tpl.$update();
+      tpl.$callbacks.run();
     },
     disconnected: () => {
-      cancelOnViewModeUpdateListener?.();
-      cancelOnTaskUpdateListener?.();
+      listeners.cancel();
     },
   });
 
@@ -101,8 +104,8 @@ export const TaskElement = ({
           className: 'task-btn status-btn',
           onclick: () => {
             task.complete = !task.complete;
-            updateTask(task);
-            tpl.$update();
+            updateTask([task]);
+            tpl.$callbacks.run();
           },
           update: ({ attrs }) =>
             attrs({
@@ -171,8 +174,8 @@ export const TaskElement = ({
         ${Btn({
           icon: 'trash3',
           className: 'task-btn',
-          classType: 'danger',
-          onclick: () => deleteTask(task.id),
+          variant: 'danger',
+          onclick: () => deleteTask([task.id]),
           update: ({ attrs }) => {
             attrs({ ariaLabel: `Delete "${task.value}" task` });
           },
@@ -181,7 +184,7 @@ export const TaskElement = ({
     </li>
   `;
 
-  tpl.$update();
+  tpl.$callbacks.run();
 
   return tpl;
 };
