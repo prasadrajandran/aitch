@@ -1,6 +1,7 @@
 import { style } from '../../dist/index';
 
 type CssSelector = string;
+
 type CssScope = string;
 
 const ROOT_KEYWORD = '$root';

@@ -9,7 +9,6 @@ import {
   viewModeUpdate,
 } from '../state';
 import { html } from '../../dist/index';
-import { _merge, _ref, _text } from '../../dist/directives';
 import { Btn } from '../components/btn';
 import { createStyle } from '../helpers/create-style';
 
@@ -45,12 +44,12 @@ export const BottomBar = ({
   let viewMode = getViewMode();
 
   onTaskUpdate(() => {
-    tpl.$callbacks.run();
+    tpl.$cb.run();
   });
 
   onViewModeUpdate((newViewMode) => {
     viewMode = newViewMode;
-    tpl.$callbacks.run();
+    tpl.$cb.run();
   });
 
   const tpl = html<HTMLElement, Directives>/* html */ `
@@ -115,13 +114,6 @@ export const BottomBar = ({
               },
             }}
             ${({ show, hide }) => {
-              const tasks = getTasks();
-
-              if (!tasks.size) {
-                hide();
-                return;
-              }
-
               for (const [_, task] of getTasks()) {
                 if (task.complete) {
                   show();
@@ -137,7 +129,7 @@ export const BottomBar = ({
     </div>
   `;
 
-  tpl.$callbacks.run();
+  tpl.$cb.run();
 
   return tpl;
 };

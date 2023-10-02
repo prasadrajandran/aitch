@@ -37,7 +37,7 @@ export const TaskInput = ({
   updateTask,
   onTaskUpdate,
 }: Props) => {
-  let allComplete = false;
+  let allTasksComplete = false;
 
   const areAllTasksComplete = () => {
     for (const [_, task] of getTasks()) {
@@ -50,14 +50,14 @@ export const TaskInput = ({
 
   onTaskUpdate((tasks) => {
     for (const { task, operation } of tasks) {
-      if (operation !== 'delete' && allComplete && !task.complete) {
-        allComplete = false;
+      if (operation !== 'delete' && allTasksComplete && !task.complete) {
+        allTasksComplete = false;
       } else {
-        allComplete = areAllTasksComplete();
+        allTasksComplete = areAllTasksComplete();
         break;
       }
     }
-    tpl.$callbacks.run();
+    tpl.$cb.run();
   });
 
   const tpl = html<HTMLFormElement, Directives>/* html */ `<form
@@ -80,8 +80,8 @@ export const TaskInput = ({
 
           if (!tasks.size) return;
 
-          const complete = !allComplete;
-          allComplete = complete;
+          const complete = !allTasksComplete;
+          allTasksComplete = complete;
           let updatedTasks = [] as Task[];
           for (const [_, task] of tasks) {
             updatedTasks.push({ ...task, complete });
@@ -89,7 +89,8 @@ export const TaskInput = ({
           updateTask(updatedTasks);
         },
         update: ({ attrMap }) => attrMap({ disabled: !getTasks().size }),
-        updateIcon: () => (allComplete ? 'check-circle-fill' : 'check-circle'),
+        updateIcon: () =>
+          allTasksComplete ? 'check-circle-fill' : 'check-circle',
       })}
       ${Input({
         size: 'lg',
@@ -112,8 +113,8 @@ export const TaskInput = ({
     </div>
   </form>`;
 
-  allComplete = areAllTasksComplete();
-  tpl.$callbacks.run();
+  allTasksComplete = areAllTasksComplete();
+  tpl.$cb.run();
 
   return tpl;
 };

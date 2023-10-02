@@ -1,6 +1,9 @@
-import type { TemplateDirectiveExp } from '../../dist/helpers/create-directive';
-import type { TemplateAttrsExp, TemplateCallbackExp } from '../../dist/h';
-import { _merge } from '../../dist/directives';
+import type {
+  TemplateAttrsExp,
+  TemplateCallbackExp,
+  TemplateDirectiveExp,
+} from '../../dist/h';
+import { _mergeAll } from '../../dist/directives';
 import { html } from '../../dist/index';
 
 export const Icon = (
@@ -12,14 +15,13 @@ export const Icon = (
     | TemplateCallbackExp
   )[]
 ) => {
-  return _merge(
+  return _mergeAll(
     html`<i
       class="bi bi-${type}"
       ${templateArgs}
       ${updateIcon
         ? ({ attrMap }) => attrMap({ class: `bi bi-${updateIcon()}` })
         : ''}
-    ></i>`,
-    { callbacks: true }
+    ></i>`
   );
 };

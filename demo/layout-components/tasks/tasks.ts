@@ -8,7 +8,7 @@ import type {
   onViewModeUpdate,
 } from '../../state';
 import { html } from '../../../dist/index';
-import { _list, _merge, _ref, _text } from '../../../dist/directives';
+import { _list } from '../../../dist/directives';
 import { createStyle } from '../../helpers/create-style';
 import { TaskElement, TaskProps } from './task';
 
@@ -56,6 +56,7 @@ export const TasksElement = ({
     if (tasks.some(({ operation }) => operation !== 'update')) {
       tpl.tasks = getTasks();
     }
+    tpl.$cb.run();
   });
 
   const tpl = html<DocumentFragment, TasksDirectives>/* html */ `
@@ -65,7 +66,7 @@ export const TasksElement = ({
       ${_list({
         name: 'tasks',
         items: getTasks(),
-        element: (task) =>
+        node: (task) =>
           TaskElement({
             getViewMode,
             getTask: () => getTask(task.id),
@@ -78,7 +79,7 @@ export const TasksElement = ({
     ></ol>
   `;
 
-  tpl.$callbacks.run();
+  tpl.$cb.run();
 
   return tpl;
 };

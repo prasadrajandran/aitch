@@ -37,7 +37,7 @@ export const TaskElement = ({
 
   const enableEditing = () => {
     isEditing = true;
-    tpl.$callbacks.run();
+    tpl.$cb.run();
   };
 
   const updateTaskValue = () => {
@@ -48,7 +48,7 @@ export const TaskElement = ({
     isEditing = false;
     task.value = tpl.taskInput.node.value;
     updateTask([task]);
-    tpl.$callbacks.run();
+    tpl.$cb.run();
   };
 
   const watcher = new LifecycleCallbacks({
@@ -57,7 +57,7 @@ export const TaskElement = ({
       listeners.push(
         onViewModeUpdate((newViewMode) => {
           viewMode = newViewMode;
-          tpl.$callbacks.run();
+          tpl.$cb.run();
         })
       );
       listeners.push(
@@ -66,14 +66,14 @@ export const TaskElement = ({
           if (updatedTask) {
             task = updatedTask.task;
             tpl.task = task.value;
-            tpl.$callbacks.run();
+            tpl.$cb.run();
           }
         })
       );
 
       task = getTask();
       tpl.task = task.value;
-      tpl.$callbacks.run();
+      tpl.$cb.run();
     },
     disconnected: () => {
       listeners.cancel();
@@ -105,7 +105,7 @@ export const TaskElement = ({
           onclick: () => {
             task.complete = !task.complete;
             updateTask([task]);
-            tpl.$callbacks.run();
+            tpl.$cb.run();
           },
           update: ({ attrs }) =>
             attrs({
@@ -184,7 +184,7 @@ export const TaskElement = ({
     </li>
   `;
 
-  tpl.$callbacks.run();
+  tpl.$cb.run();
 
   return tpl;
 };
