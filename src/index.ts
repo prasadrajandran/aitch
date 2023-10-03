@@ -1,4 +1,4 @@
+import { attrs } from './helpers/attrs';
 import { h } from './h';
-import { repeat } from './repeat';
 import { style } from './style';
-export { h, repeat, style };
+export { h, h as html, attrs, style };

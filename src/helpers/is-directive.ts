@@ -1,15 +1,12 @@
+import type { TemplateDirectiveExp } from '../h';
 import { isPlainObject } from './is-plain-object';
-import { directiveId, createDirective } from './create-directive';
+import { directiveId } from './create-directive';
 
 /**
- * Determines if the supplied `arg` is a valid TemplateDirective value.
+ * Is `exp` a template directive?
  * @internal
- * @param arg Arg to check.
+ * @param exp Expression to check.
  */
-export const isDirective = (
-  arg: unknown
-): arg is ReturnType<ReturnType<typeof createDirective>> => {
-  return (
-    isPlainObject(arg) && 'directive' in arg && arg['directive'] === directiveId
-  );
+export const isDirective = (exp: unknown): exp is TemplateDirectiveExp => {
+  return isPlainObject(exp) && 'id' in exp && exp['id'] === directiveId;
 };

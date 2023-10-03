@@ -1,79 +1,86 @@
-import type { TemplateArgIndex } from '../h';
+import type { ParsedTemplate, TemplateExpIndex } from '../h';
 
-export type DirectiveIdentifier = symbol;
+/**
+ * Return values of template directives.
+ * @internal
+ */
+export type TemplateDirectiveResults<K = unknown, V = unknown> = Record<
+  keyof K,
+  V
+>;
 
-export type DirectiveCallbackResultKey = string;
-
-export type TemplateDirective = ReturnType<typeof createDirective>;
-
-export const directiveId = '9554857d-de86-490c-b840-97c0b09ec272';
-
-const reservedKeys = new Set(['fragment']);
-
-const registeredDirectiveKeys = new Set<DirectiveCallbackResultKey>();
-
+/**
+ * An instance of a directive template expression.
+ * @internal
+ */
 export interface DirectiveInstance<
   DIRECTIVE_ARGS extends unknown[] = unknown[],
-  DIRECTIVE_NODE extends Node = Element
+  DIRECTIVE_NODE extends HTMLElement = HTMLElement
 > {
+  /**
+   * Node that the directive is attached to.
+   *
+   * Note: If this is a "node" type directive, it will be attached to a
+   * "template" element that serves as a placeholder.
+   */
   node: DIRECTIVE_NODE;
-  pos: TemplateArgIndex;
+  /**
+   * Index position of the directive instance.
+   */
+  index: TemplateExpIndex;
+  /**
+   * Arguments provided to the directive.
+   */
   args: DIRECTIVE_ARGS;
 }
 
+/**
+ * Directive definition.
+ * @internal
+ */
 export interface DirectiveDefinition<
-  DIRECTIVE_KEY extends DirectiveCallbackResultKey,
   DIRECTIVE_ARGS extends unknown[],
-  DIRECTIVE_RESULT,
-  DIRECTIVE_NODE extends Node
+  DIRECTIVE_NODE extends HTMLElement = HTMLElement
 > {
+  /**
+   * Directive type:
+   * "attr" - Directive must be attached to an element and it modifies the
+   *          element it is attached to.
+   * "node" - Directive produces a node or template.
+   */
   type: 'attr' | 'node';
-  key?: DIRECTIVE_KEY;
+  /**
+   * Directive's callback that processes the provided arguments.
+   * @param template Template that the directive belongs to.
+   * @param instances All instances of the same directive.
+   */
   callback: (
+    template: ParsedTemplate<unknown>,
     instances: DirectiveInstance<DIRECTIVE_ARGS, DIRECTIVE_NODE>[]
-  ) => DIRECTIVE_RESULT;
+  ) => void;
 }
+
+/**
+ * Property that identifies an object as an instance of a template directive
+ * expression.
+ * @internal
+ */
+export const directiveId = '__cI4Mp6yr0__';
 
 /**
  * Create a template directive.
  * @internal
- * @param definition Directive definition.
+ * @param definition Template directive definition.
  */
 export const createDirective = <
-  DIRECTIVE_KEY extends DirectiveCallbackResultKey = '',
   DIRECTIVE_ARGS extends unknown[] = unknown[],
-  DIRECTIVE_RESULT = void,
-  DIRECTIVE_NODE extends Node = Element
+  DIRECTIVE_NODE extends HTMLElement = HTMLElement
 >(
-  definition: DirectiveDefinition<
-    DIRECTIVE_KEY,
-    DIRECTIVE_ARGS,
-    DIRECTIVE_RESULT,
-    DIRECTIVE_NODE
-  >
+  def: DirectiveDefinition<DIRECTIVE_ARGS, DIRECTIVE_NODE>
 ) => {
-  const { key } = definition;
-  if (key) {
-    if (reservedKeys.has(key)) {
-      throw new Error(
-        `This key is reserved and cannot be used in a directive: "${key}"`
-      );
-    }
-    if (registeredDirectiveKeys.has(key)) {
-      throw new Error(`Directive key already in use: "${key}"`);
-    }
-    registeredDirectiveKeys.add(key);
-  }
-
-  const identifier = Symbol(definition.key || 'directive-definition');
-
   return (...args: DIRECTIVE_ARGS) => ({
-    directive: directiveId,
-    identifier,
-    definition: {
-      ...definition,
-      key: definition.key || '',
-    },
+    id: directiveId,
+    def,
     args,
   });
 };
