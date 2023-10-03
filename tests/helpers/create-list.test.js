@@ -1,4 +1,5 @@
-import { h, repeat } from '../dist';
+import { html } from '../../dist';
+import { createList } from '../../dist/internal';
 
 const createItem = (id, name) => {
   return {
@@ -63,28 +64,28 @@ const addItem = (items, index, newItem) => {
   return entries;
 };
 
-const createElementCallback = () => {
-  return jest.fn(({ key, item: { id, name }, index }) => {
+const createNodeCallback = () => {
+  return jest.fn(({ id, name }, { key, index }) => {
     expect(typeof index).toEqual('number');
     expect(Number(key)).toEqual(index);
     expect(typeof id).toEqual('string');
     expect(typeof name).toEqual('string');
-    return h/*html*/ `<div>${id}<br/>${name}</div>`.content;
+    return html`<div>${id}<br />${name}</div>`.$node;
   });
 };
 
 const createRefCallback = () => {
-  return jest.fn(({ key, item, index, element }) => {
+  return jest.fn((node, item, { key, index }) => {
     expect(typeof index).toEqual('number');
     expect(Number(key)).toEqual(index);
     expect(typeof item.id).toEqual('string');
     expect(typeof item.name).toEqual('string');
-    expect(element instanceof HTMLDivElement).toEqual(true);
+    expect(node instanceof HTMLDivElement).toEqual(true);
   });
 };
 
 const createKeyCallback = () => {
-  return jest.fn(({ key, item, index, element }) => {
+  return jest.fn((item, { key, index }) => {
     expect(typeof index).toEqual('number');
     expect(Number(key)).toEqual(index);
     expect(typeof item.id).toEqual('string');
@@ -93,7 +94,7 @@ const createKeyCallback = () => {
   });
 };
 
-describe('repeat()', () => {
+describe('createList()', () => {
   const item0 = createItem('A-01', 'John');
   const item1 = createItem('B-02', 'Brian');
   const item2 = createItem('C-55', 'Adam');
@@ -117,15 +118,15 @@ describe('repeat()', () => {
     [4, item4],
   ]);
 
-  test('Accepts maps, sets, arrays, and objects and only container, items, and element are required', () => {
+  test('Accepts maps, sets, arrays, and objects and only container, items, and node are required', () => {
     [itemsArr, itemsObj, itemsMap, itemsSet].forEach((items) => {
-      const container = h/*html*/ `<div></div>`.content;
-      const element = createElementCallback();
+      const container = html`<div></div>`.$node;
+      const node = createNodeCallback();
 
-      repeat({
+      createList({
         container,
         items,
-        element,
+        node,
       });
 
       // ! Note: using inline snapshot because we want to make sure maps, !
@@ -133,35 +134,35 @@ describe('repeat()', () => {
       expect(container).toMatchInlineSnapshot(`
         <div>
           <div
-            data-h-repeat-key="0"
+            data-h-list-key="0"
           >
             A-01
             <br />
             John
           </div>
           <div
-            data-h-repeat-key="1"
+            data-h-list-key="1"
           >
             B-02
             <br />
             Brian
           </div>
           <div
-            data-h-repeat-key="2"
+            data-h-list-key="2"
           >
             C-55
             <br />
             Adam
           </div>
           <div
-            data-h-repeat-key="3"
+            data-h-list-key="3"
           >
             G-12
             <br />
             Michael
           </div>
           <div
-            data-h-repeat-key="4"
+            data-h-list-key="4"
           >
             Q-73
             <br />
@@ -170,19 +171,19 @@ describe('repeat()', () => {
         </div>
       `);
 
-      expect(element).toBeCalledTimes(itemsArr.length);
+      expect(node).toBeCalledTimes(itemsArr.length);
     });
   });
 
   test('Can change key value', () => {
     [itemsArr, itemsObj, itemsMap, itemsSet].forEach((items) => {
-      const container = h/*html*/ `<div></div>`.content;
-      const element = createElementCallback();
+      const container = html`<div></div>`.$node;
+      const node = createNodeCallback();
 
-      repeat({
+      createList({
         container,
         items,
-        element,
+        node,
         key: createKeyCallback(),
       });
 
@@ -191,35 +192,35 @@ describe('repeat()', () => {
       expect(container).toMatchInlineSnapshot(`
         <div>
           <div
-            data-h-repeat-key="${itemsArr[0].id}"
+            data-h-list-key="${itemsArr[0].id}"
           >
             A-01
             <br />
             John
           </div>
           <div
-            data-h-repeat-key="${itemsArr[1].id}"
+            data-h-list-key="${itemsArr[1].id}"
           >
             B-02
             <br />
             Brian
           </div>
           <div
-            data-h-repeat-key="${itemsArr[2].id}"
+            data-h-list-key="${itemsArr[2].id}"
           >
             C-55
             <br />
             Adam
           </div>
           <div
-            data-h-repeat-key="${itemsArr[3].id}"
+            data-h-list-key="${itemsArr[3].id}"
           >
             G-12
             <br />
             Michael
           </div>
           <div
-            data-h-repeat-key="${itemsArr[4].id}"
+            data-h-list-key="${itemsArr[4].id}"
           >
             Q-73
             <br />
@@ -228,19 +229,19 @@ describe('repeat()', () => {
         </div>
       `);
 
-      expect(element).toBeCalledTimes(itemsArr.length);
+      expect(node).toBeCalledTimes(itemsArr.length);
     });
   });
 
   test('Can change key value and key name', () => {
     [itemsArr, itemsObj, itemsMap, itemsSet].forEach((items) => {
-      const container = h/*html*/ `<div></div>`.content;
-      const element = createElementCallback();
+      const container = html`<div></div>`.$node;
+      const node = createNodeCallback();
 
-      repeat({
+      createList({
         container,
         items,
-        element,
+        node,
         key: createKeyCallback(),
         keyName: 'key',
       });
@@ -287,20 +288,20 @@ describe('repeat()', () => {
         </div>
       `);
 
-      expect(element).toBeCalledTimes(itemsArr.length);
+      expect(node).toBeCalledTimes(itemsArr.length);
     });
   });
 
   test('Calls ref() on every item', () => {
     [itemsArr, itemsObj, itemsMap, itemsSet].forEach((items) => {
-      const container = h/*html*/ `<div></div>`.content;
-      const element = createElementCallback();
+      const container = html`<div></div>`.$node;
+      const node = createNodeCallback();
       const ref = createRefCallback();
 
-      repeat({
+      createList({
         container,
         items,
-        element,
+        node,
         ref,
       });
 
@@ -309,35 +310,35 @@ describe('repeat()', () => {
       expect(container).toMatchInlineSnapshot(`
         <div>
           <div
-            data-h-repeat-key="0"
+            data-h-list-key="0"
           >
             A-01
             <br />
             John
           </div>
           <div
-            data-h-repeat-key="1"
+            data-h-list-key="1"
           >
             B-02
             <br />
             Brian
           </div>
           <div
-            data-h-repeat-key="2"
+            data-h-list-key="2"
           >
             C-55
             <br />
             Adam
           </div>
           <div
-            data-h-repeat-key="3"
+            data-h-list-key="3"
           >
             G-12
             <br />
             Michael
           </div>
           <div
-            data-h-repeat-key="4"
+            data-h-list-key="4"
           >
             Q-73
             <br />
@@ -346,30 +347,30 @@ describe('repeat()', () => {
         </div>
       `);
 
-      expect(element).toBeCalledTimes(itemsArr.length);
+      expect(node).toBeCalledTimes(itemsArr.length);
       expect(ref).toBeCalledTimes(itemsArr.length);
     });
   });
 
   test('Does not render nodes if their keys have not changed', () => {
     [itemsArr, itemsObj, itemsMap, itemsSet].forEach((items) => {
-      const container = h/*html*/ `<div></div>`.content;
-      const element = createElementCallback();
+      const container = html`<div></div>`.$node;
+      const node = createNodeCallback();
       const firstCallNodes = [];
       const secondCallNodes = [];
 
-      repeat({
+      createList({
         container,
         items,
-        element,
-        ref: ({ element }) => firstCallNodes.push(element),
+        node,
+        ref: (node) => firstCallNodes.push(node),
       });
 
-      repeat({
+      createList({
         container,
         items,
-        element,
-        ref: ({ element }) => secondCallNodes.push(element),
+        node,
+        ref: (node) => secondCallNodes.push(node),
       });
 
       expect(firstCallNodes.length).toEqual(itemsArr.length);
@@ -382,18 +383,15 @@ describe('repeat()', () => {
 
   test('Removes entries that have been deleted and adds new entries that have been added', () => {
     [itemsArr, itemsObj, itemsMap, itemsSet].forEach((items) => {
-      const container = h/*html*/ `<div></div>`.content;
+      const container = html`<div></div>`.$node;
       const item6 = createItem('X-29', 'Sheldon');
       const entries = addItem(removeItem(items, item1, item3), 6, item6);
 
-      repeat({
+      createList({
         container,
         items: entries,
-        element: ({ item: { id, name } }) =>
-          h/*html*/ `
-          <div>${id}<br/>${name}</div>
-        `.content,
-        key: ({ item: { id } }) => id,
+        node: ({ id, name }) => html` <div>${id}<br />${name}</div> `.$node,
+        key: ({ id }) => id,
         keyName: 'k',
       });
 
@@ -442,27 +440,27 @@ describe('repeat()', () => {
   test.skip('Only modifies immediate descendants', () => {
     [itemsArr, itemsObj, itemsMap, itemsSet].forEach((items) => {
       let innerContainer = null;
-      const container = h/*html*/ `
+      const container = html`
         <div>
           <div ${{ $ref: (el) => (innerContainer = el) }}></div>
         </div>
-      `.content;
+      `.$node;
 
       expect(container).toBeInstanceOf(HTMLDivElement);
       expect(innerContainer).toBeInstanceOf(HTMLDivElement);
 
-      const element = createElementCallback();
+      const node = createNodeCallback();
 
-      repeat({
+      createList({
         container: innerContainer,
         items,
-        element,
+        node,
       });
 
-      repeat({
+      createList({
         container,
         items,
-        element,
+        node,
       });
 
       expect(container).toMatchInlineSnapshot();
