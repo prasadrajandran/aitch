@@ -134,6 +134,7 @@ describe('createList()', () => {
       expect(container).toMatchInlineSnapshot(`
         <div>
           <div
+            data-h-list-index="0"
             data-h-list-key="0"
           >
             A-01
@@ -141,6 +142,7 @@ describe('createList()', () => {
             John
           </div>
           <div
+            data-h-list-index="1"
             data-h-list-key="1"
           >
             B-02
@@ -148,6 +150,7 @@ describe('createList()', () => {
             Brian
           </div>
           <div
+            data-h-list-index="2"
             data-h-list-key="2"
           >
             C-55
@@ -155,6 +158,7 @@ describe('createList()', () => {
             Adam
           </div>
           <div
+            data-h-list-index="3"
             data-h-list-key="3"
           >
             G-12
@@ -162,6 +166,7 @@ describe('createList()', () => {
             Michael
           </div>
           <div
+            data-h-list-index="4"
             data-h-list-key="4"
           >
             Q-73
@@ -192,6 +197,7 @@ describe('createList()', () => {
       expect(container).toMatchInlineSnapshot(`
         <div>
           <div
+            data-h-list-index="0"
             data-h-list-key="${itemsArr[0].id}"
           >
             A-01
@@ -199,6 +205,7 @@ describe('createList()', () => {
             John
           </div>
           <div
+            data-h-list-index="1"
             data-h-list-key="${itemsArr[1].id}"
           >
             B-02
@@ -206,6 +213,7 @@ describe('createList()', () => {
             Brian
           </div>
           <div
+            data-h-list-index="2"
             data-h-list-key="${itemsArr[2].id}"
           >
             C-55
@@ -213,6 +221,7 @@ describe('createList()', () => {
             Adam
           </div>
           <div
+            data-h-list-index="3"
             data-h-list-key="${itemsArr[3].id}"
           >
             G-12
@@ -220,6 +229,7 @@ describe('createList()', () => {
             Michael
           </div>
           <div
+            data-h-list-index="4"
             data-h-list-key="${itemsArr[4].id}"
           >
             Q-73
@@ -251,6 +261,7 @@ describe('createList()', () => {
       expect(container).toMatchInlineSnapshot(`
         <div>
           <div
+            data-h-list-index="0"
             key="${itemsArr[0].id}"
           >
             A-01
@@ -258,6 +269,7 @@ describe('createList()', () => {
             John
           </div>
           <div
+            data-h-list-index="1"
             key="${itemsArr[1].id}"
           >
             B-02
@@ -265,6 +277,7 @@ describe('createList()', () => {
             Brian
           </div>
           <div
+            data-h-list-index="2"
             key="${itemsArr[2].id}"
           >
             C-55
@@ -272,6 +285,7 @@ describe('createList()', () => {
             Adam
           </div>
           <div
+            data-h-list-index="3"
             key="${itemsArr[3].id}"
           >
             G-12
@@ -279,6 +293,7 @@ describe('createList()', () => {
             Michael
           </div>
           <div
+            data-h-list-index="4"
             key="${itemsArr[4].id}"
           >
             Q-73
@@ -310,6 +325,7 @@ describe('createList()', () => {
       expect(container).toMatchInlineSnapshot(`
         <div>
           <div
+            data-h-list-index="0"
             data-h-list-key="0"
           >
             A-01
@@ -317,6 +333,7 @@ describe('createList()', () => {
             John
           </div>
           <div
+            data-h-list-index="1"
             data-h-list-key="1"
           >
             B-02
@@ -324,6 +341,7 @@ describe('createList()', () => {
             Brian
           </div>
           <div
+            data-h-list-index="2"
             data-h-list-key="2"
           >
             C-55
@@ -331,6 +349,7 @@ describe('createList()', () => {
             Adam
           </div>
           <div
+            data-h-list-index="3"
             data-h-list-key="3"
           >
             G-12
@@ -338,6 +357,7 @@ describe('createList()', () => {
             Michael
           </div>
           <div
+            data-h-list-index="4"
             data-h-list-key="4"
           >
             Q-73
@@ -400,6 +420,7 @@ describe('createList()', () => {
       expect(container).toMatchInlineSnapshot(`
         <div>
           <div
+            data-h-list-index="0"
             k="${itemsArr[0].id}"
           >
             A-01
@@ -407,6 +428,7 @@ describe('createList()', () => {
             John
           </div>
           <div
+            data-h-list-index="1"
             k="${itemsArr[2].id}"
           >
             C-55
@@ -414,6 +436,7 @@ describe('createList()', () => {
             Adam
           </div>
           <div
+            data-h-list-index="2"
             k="${itemsArr[4].id}"
           >
             Q-73
@@ -421,6 +444,7 @@ describe('createList()', () => {
             Andrew
           </div>
           <div
+            data-h-list-index="3"
             k="${item6.id}"
           >
             ${item6.id}

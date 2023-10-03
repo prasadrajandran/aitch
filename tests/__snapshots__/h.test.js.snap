@@ -3,37 +3,30 @@
 exports[`h() Snapshot matches 1`] = `
 <form>
   
-        
-  <div>
-    
           
+  <div>
     First name: 
     <input
       type="text"
     />
-    
-          
+     
     Last name: 
     <input
       type="text"
     />
-    
-          
+     
     Age: 
     <input
       type="number"
     />
-    
-          
+     
     Address: 
     <input
       type="text"
     />
-    
-        
   </div>
   
-        
+          
   <div>
     <button
       data-is-default="false"
@@ -44,6 +37,6 @@ exports[`h() Snapshot matches 1`] = `
     </button>
   </div>
   
-      
+        
 </form>
 `;
