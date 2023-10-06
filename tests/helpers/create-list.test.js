@@ -1,5 +1,5 @@
 import { html } from '../../dist';
-import { createList } from '../../dist/internal';
+import { createList } from '../../src/helpers/create-list';
 
 const createItem = (id, name) => {
   return {
