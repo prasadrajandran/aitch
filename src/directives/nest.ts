@@ -11,7 +11,7 @@ type NestedTemplateName = string;
  * Nest directive type generator.
  */
 export type NestDirective<
-  NESTED_TEMPLATE extends { [P in keyof NESTED_TEMPLATE]: ParsedTemplate }
+  NESTED_TEMPLATE extends { [P in keyof NESTED_TEMPLATE]: ParsedTemplate },
 > = NESTED_TEMPLATE;
 
 /**

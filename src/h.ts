@@ -15,7 +15,7 @@ import { isParsedTemplate } from './helpers/is-parsed-template';
  */
 export type ParsedTemplate<
   NODE_TYPE = HTMLElement,
-  DIRECTIVES extends TemplateDirectiveResults = TemplateDirectiveResults
+  DIRECTIVES extends TemplateDirectiveResults = TemplateDirectiveResults,
 > = {
   $id: typeof parsedTemplateId;
   $cb: TemplateCallbackSet;
@@ -26,7 +26,7 @@ export type ParsedTemplate<
  * An "attributes" template expression.
  */
 export type TemplateAttrsExp<
-  CUSTOM_ATTRS extends { [P in keyof CUSTOM_ATTRS]: CUSTOM_ATTRS[P] } = object
+  CUSTOM_ATTRS extends { [P in keyof CUSTOM_ATTRS]: CUSTOM_ATTRS[P] } = object,
 > = {
   /**
    * CSS classes that will be appended to the element.
@@ -62,7 +62,7 @@ export type TemplateDirectiveExp = ReturnType<
 
 export type TemplateCallbackRef<
   NODE_TYPE extends HTMLElement = HTMLElement,
-  PARSED_TEMPLATE extends ParsedTemplate = ParsedTemplate
+  PARSED_TEMPLATE extends ParsedTemplate = ParsedTemplate,
 > = ElementRef<NODE_TYPE> & { tpl: PARSED_TEMPLATE };
 
 /**
@@ -79,7 +79,7 @@ export type TemplateCallbackRef<
  */
 export type TemplateCallbackExp<
   NODE_TYPE extends HTMLElement = HTMLElement,
-  PARSED_TEMPLATE extends ParsedTemplate = ParsedTemplate
+  PARSED_TEMPLATE extends ParsedTemplate = ParsedTemplate,
 > = (ref: TemplateCallbackRef<NODE_TYPE, PARSED_TEMPLATE>) => unknown;
 
 /**
@@ -191,7 +191,7 @@ class TemplateCallbackSet extends Set<() => unknown> {
  */
 const tag = (
   htmlStrings: TemplateStringsArray,
-  templateExps: TemplateExps[]
+  templateExps: TemplateExps[],
 ): {
   taggedTemplate: HTMLTemplateElement;
   taggedExps: TaggedExpMap;
@@ -265,7 +265,7 @@ const tag = (
         } else {
           throw new Error(
             `Invalid template expression at index ${expCount}:\n` +
-              createErrorTemplate()
+              createErrorTemplate(),
           );
         }
       });
@@ -290,7 +290,7 @@ const tag = (
  */
 const interpolate = <
   NODE_TYPE = HTMLElement,
-  DIRECTIVES extends TemplateDirectiveResults = TemplateDirectiveResults
+  DIRECTIVES extends TemplateDirectiveResults = TemplateDirectiveResults,
 >({
   taggedTemplate,
   taggedExps,
@@ -317,7 +317,7 @@ const interpolate = <
       throw new Error(
         `Unable to interpolate expression at index ${expIndex}. ` +
           `This could have occurred because the previous expression was ` +
-          `mismatched.\n${createErrorTemplate()}`
+          `mismatched.\n${createErrorTemplate()}`,
       );
     }
 
@@ -360,7 +360,7 @@ const interpolate = <
         if (typeof key === 'string' && key.startsWith('$')) {
           throw new Error(
             'The "$" prefix is reserved and cannot be used to declare ' +
-              `additional properties on a parsed template: "${key}"`
+              `additional properties on a parsed template: "${key}"`,
           );
         }
         if (key in target) {
@@ -369,7 +369,7 @@ const interpolate = <
         Object.defineProperty(target, key, descriptor);
         return true;
       },
-    }
+    },
   );
 
   // Attach parsed template to all callback refs.
@@ -390,7 +390,7 @@ const interpolate = <
  */
 export const h = <
   NODE_TYPE = HTMLElement,
-  DIRECTIVES extends TemplateDirectiveResults = TemplateDirectiveResults
+  DIRECTIVES extends TemplateDirectiveResults = TemplateDirectiveResults,
 >(
   htmlStrings: TemplateStringsArray,
   ...templateExps: TemplateExps[]

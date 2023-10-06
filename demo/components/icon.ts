@@ -22,6 +22,6 @@ export const Icon = (
       ${updateIcon
         ? ({ attrMap }) => attrMap({ class: `bi bi-${updateIcon()}` })
         : ''}
-    ></i>`
+    ></i>`,
   );
 };

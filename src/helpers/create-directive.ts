@@ -15,7 +15,7 @@ export type TemplateDirectiveResults<K = unknown, V = unknown> = Record<
  */
 export interface DirectiveInstance<
   DIRECTIVE_ARGS extends unknown[] = unknown[],
-  DIRECTIVE_NODE extends HTMLElement = HTMLElement
+  DIRECTIVE_NODE extends HTMLElement = HTMLElement,
 > {
   /**
    * Node that the directive is attached to.
@@ -40,7 +40,7 @@ export interface DirectiveInstance<
  */
 export interface DirectiveDefinition<
   DIRECTIVE_ARGS extends unknown[],
-  DIRECTIVE_NODE extends HTMLElement = HTMLElement
+  DIRECTIVE_NODE extends HTMLElement = HTMLElement,
 > {
   /**
    * Directive type:
@@ -56,7 +56,7 @@ export interface DirectiveDefinition<
    */
   callback: (
     template: ParsedTemplate<unknown>,
-    instances: DirectiveInstance<DIRECTIVE_ARGS, DIRECTIVE_NODE>[]
+    instances: DirectiveInstance<DIRECTIVE_ARGS, DIRECTIVE_NODE>[],
   ) => void;
 }
 
@@ -74,9 +74,9 @@ export const directiveId = '__cI4Mp6yr0__';
  */
 export const createDirective = <
   DIRECTIVE_ARGS extends unknown[] = unknown[],
-  DIRECTIVE_NODE extends HTMLElement = HTMLElement
+  DIRECTIVE_NODE extends HTMLElement = HTMLElement,
 >(
-  def: DirectiveDefinition<DIRECTIVE_ARGS, DIRECTIVE_NODE>
+  def: DirectiveDefinition<DIRECTIVE_ARGS, DIRECTIVE_NODE>,
 ) => {
   return (...args: DIRECTIVE_ARGS) => ({
     id: directiveId,

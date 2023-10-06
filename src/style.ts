@@ -13,7 +13,7 @@ export const style = (rules: StyleRules): string => {
         if (typeof value === 'string') {
           const snakeCasedName = name.replace(
             /[A-Z]/g,
-            (c) => `-${c.toLowerCase()}`
+            (c) => `-${c.toLowerCase()}`,
           );
           return (items += `${snakeCasedName}:${value};`);
         }

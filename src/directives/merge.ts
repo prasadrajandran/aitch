@@ -20,7 +20,7 @@ type MergeOptions = {
  * Merge directive type generator.
  */
 export type MergeDirective<
-  M_TEMPLATE extends { [P in keyof M_TEMPLATE]: ParsedTemplate }
+  M_TEMPLATE extends { [P in keyof M_TEMPLATE]: ParsedTemplate },
 > = M_TEMPLATE;
 
 /**

@@ -20,7 +20,7 @@ type FunctionBody<FUNC_ARGS extends never[] = never[]> = (
  * Fn directive type generator.
  */
 export type FnDirective<
-  FUNCTION_NAMES extends Record<FunctionName, FunctionBody>
+  FUNCTION_NAMES extends Record<FunctionName, FunctionBody>,
 > = FUNCTION_NAMES;
 
 /**

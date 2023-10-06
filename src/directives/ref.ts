@@ -12,7 +12,7 @@ type ReferencedElementName = string;
  * Ref directive type generator.
  */
 export type RefDirective<
-  NODE_REFS extends { [P in keyof NODE_REFS]: NODE_REFS[P] }
+  NODE_REFS extends { [P in keyof NODE_REFS]: NODE_REFS[P] },
 > = { [P in keyof NODE_REFS]: ElementRef<NODE_REFS[P]> };
 
 /**

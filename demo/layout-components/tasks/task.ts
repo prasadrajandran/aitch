@@ -58,7 +58,7 @@ export const TaskElement = ({
         onViewModeUpdate((newViewMode) => {
           viewMode = newViewMode;
           tpl.$cb.run();
-        })
+        }),
       );
       listeners.push(
         onTaskUpdate((tasks) => {
@@ -68,7 +68,7 @@ export const TaskElement = ({
             tpl.task = task.value;
             tpl.$cb.run();
           }
-        })
+        }),
       );
 
       task = getTask();

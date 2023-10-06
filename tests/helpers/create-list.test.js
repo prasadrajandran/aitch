@@ -34,7 +34,7 @@ const removeItem = (items, ...itemsToDelete) => {
     } else if (Array.isArray(entries)) {
       entries.splice(
         entries.findIndex(({ id }) => item.id === id),
-        1
+        1,
       );
     } else {
       for (const [k, { id }] of Object.entries(entries)) {

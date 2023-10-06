@@ -41,7 +41,7 @@ export const attrs = (node: HTMLElement, nodeAttrs: TemplateAttrsExp): void => {
           } else {
             node.setAttribute(
               attrName,
-              value === true ? '' : (value as string)
+              value === true ? '' : (value as string),
             );
           }
         } else {

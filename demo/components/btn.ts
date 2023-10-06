@@ -40,17 +40,15 @@ export const Btn = ({
   const btnClassType = `btn-outline-${variant || 'primary'}`;
   const iconElement = icon ? Icon(icon, updateIcon || false) : '';
 
-  return _mergeAll(
-    html<HTMLButtonElement>/* html */ `
-      <button
-        type="button"
-        class="btn ${btnClassType} ${btnSize}"
-        ${props || ''}
-        ${ref ? _ref(ref) : ''}
-        ${update || ''}
-      >
-        ${iconElement} ${child}
-      </button>
-    `
-  );
+  return _mergeAll(html<HTMLButtonElement>/* html */ `
+    <button
+      type="button"
+      class="btn ${btnClassType} ${btnSize}"
+      ${props || ''}
+      ${ref ? _ref(ref) : ''}
+      ${update || ''}
+    >
+      ${iconElement} ${child}
+    </button>
+  `);
 };

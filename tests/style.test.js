@@ -57,13 +57,13 @@ describe('style()', () => {
     expect(() => style()).toThrowError();
   });
 
-  test('Parses empty object', () => {
-    expect(runAndFormat({})).toMatchSnapshot();
+  test('Parses empty object', async () => {
+    expect(await runAndFormat({})).toMatchSnapshot();
   });
 
   for (const [testName, data] of Object.entries(testData)) {
-    test(testName, () => {
-      expect(runAndFormat(data)).toMatchSnapshot();
+    test(testName, async () => {
+      expect(await runAndFormat(data)).toMatchSnapshot();
     });
   }
 });

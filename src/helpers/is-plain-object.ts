@@ -8,5 +8,5 @@
  */
 export const isPlainObject = (arg: unknown): arg is object =>
   Boolean(
-    arg && (arg.constructor === Object || Object.getPrototypeOf(arg) === null)
+    arg && (arg.constructor === Object || Object.getPrototypeOf(arg) === null),
   );

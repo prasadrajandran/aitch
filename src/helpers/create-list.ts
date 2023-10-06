@@ -43,7 +43,7 @@ interface ListRefCallback<ITEM, NODE extends ListNode> {
   (
     el: NODE,
     item: ITEM,
-    data: { key: ListItemKey; index: ListItemIndex }
+    data: { key: ListItemKey; index: ListItemIndex },
   ): unknown;
 }
 

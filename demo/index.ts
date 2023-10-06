@@ -20,27 +20,25 @@ import {
 retrieveViewMode();
 retrieveTasks();
 
-document.body.append(
-  html`
-    <div class="container text-center" style="max-width: 800px">
-      ${Heading()} ${TaskInput({ getTasks, addTask, updateTask, onTaskUpdate })}
-      ${TasksElement({
-        getViewMode,
-        getTasks,
-        getTask,
-        updateTask,
-        deleteTask,
-        onTaskUpdate,
-        onViewModeUpdate,
-      })}
-      ${BottomBar({
-        getTasks,
-        getViewMode,
-        deleteTask,
-        updateViewMode,
-        onViewModeUpdate,
-        onTaskUpdate,
-      })}
-    </div>
-  `.$node
-);
+document.body.append(html`
+  <div class="container text-center" style="max-width: 800px">
+    ${Heading()} ${TaskInput({ getTasks, addTask, updateTask, onTaskUpdate })}
+    ${TasksElement({
+      getViewMode,
+      getTasks,
+      getTask,
+      updateTask,
+      deleteTask,
+      onTaskUpdate,
+      onViewModeUpdate,
+    })}
+    ${BottomBar({
+      getTasks,
+      getViewMode,
+      deleteTask,
+      updateViewMode,
+      onViewModeUpdate,
+      onTaskUpdate,
+    })}
+  </div>
+`.$node);

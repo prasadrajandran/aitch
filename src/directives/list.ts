@@ -19,11 +19,11 @@ type ListData<ITEM, ELEMENT extends ListNode> = {
  * List directive type generator.
  */
 export type ListDirective<
-  LISTS extends Record<ListName, Parameters<typeof createList>[0]['items']>
+  LISTS extends Record<ListName, Parameters<typeof createList>[0]['items']>,
 > = LISTS;
 
 export const _list = <ITEM, ELEMENT extends ListNode>(
-  args: ListData<ITEM, ELEMENT>
+  args: ListData<ITEM, ELEMENT>,
 ) => {
   return createDirective<[ListData<ITEM, ELEMENT>]>({
     type: 'attr',
@@ -35,7 +35,7 @@ export const _list = <ITEM, ELEMENT extends ListNode>(
           enumerable: true,
           get: () => list.items,
           set: (
-            items: Parameters<typeof createList<ITEM, ELEMENT>>[0]['items']
+            items: Parameters<typeof createList<ITEM, ELEMENT>>[0]['items'],
           ) => {
             list.items = items;
             createList(list);

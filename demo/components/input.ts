@@ -17,6 +17,6 @@ export const Input = ({ size, ref, update, ...props }: Props = {}) => {
       ${props}
       ${ref ? _ref(ref) : ''}
       ${update || ''}
-    />`
+    />`,
   );
 };

@@ -7,7 +7,7 @@ type CssScope = string;
 const ROOT_KEYWORD = '$root';
 
 export const createStyle = (
-  rules: Record<CssSelector, Partial<CSSStyleDeclaration>>
+  rules: Record<CssSelector, Partial<CSSStyleDeclaration>>,
 ): CssScope => {
   const styleElement = document.createElement('style');
 

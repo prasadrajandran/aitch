@@ -8,49 +8,41 @@ describe('h()', () => {
     expect(
       html`<div>
         <p><br /></p>
-      </div>`.$node
+      </div>`.$node,
     ).toBeInstanceOf(HTMLDivElement);
     expect(html`This is a test!`.$node).toBeInstanceOf(Text);
-    expect(
-      html`
-        This is a test! This is only a test! I repeat, this is a test, this is
-        only a test! This is a test! This is only a test! I repeat, this is a
-        test, this is only a test!
-      `.$node
-    ).toBeInstanceOf(Text);
+    expect(html`
+      This is a test! This is only a test! I repeat, this is a test, this is
+      only a test! This is a test! This is only a test! I repeat, this is a
+      test, this is only a test!
+    `.$node).toBeInstanceOf(Text);
   });
 
   test('Leading/trailing whitespace do not affect calculation of number of root nodes', () => {
     expect(html`<div></div> `.$node).toBeInstanceOf(HTMLDivElement);
     expect(html`<p></p> `.$node).toBeInstanceOf(HTMLParagraphElement);
-    expect(
-      html`
-        <div>
-          <p>
-            Hello, this is a test!
-            <br />
-          </p>
-        </div>
-      `.$node
-    ).toBeInstanceOf(HTMLDivElement);
+    expect(html`
+      <div>
+        <p>
+          Hello, this is a test!
+          <br />
+        </p>
+      </div>
+    `.$node).toBeInstanceOf(HTMLDivElement);
   });
 
   test('Returns a document fragment if template contains more than one root node', () => {
-    expect(
-      html`
-        <div></div>
-        <div></div>
-      `.$node
-    ).toBeInstanceOf(DocumentFragment);
-    expect(
-      html`
-        This is a test!
+    expect(html`
+      <div></div>
+      <div></div>
+    `.$node).toBeInstanceOf(DocumentFragment);
+    expect(html`
+      This is a test!
+      <p>This is a test!</p>
+      <div>
         <p>This is a test!</p>
-        <div>
-          <p>This is a test!</p>
-        </div>
-      `.$node
-    ).toBeInstanceOf(DocumentFragment);
+      </div>
+    `.$node).toBeInstanceOf(DocumentFragment);
   });
 
   test('Correctly interpolates strings, numbers, and booleans', () => {
@@ -152,11 +144,11 @@ describe('h()', () => {
     expect(div.getAttribute('data-custom-id')).toBe(dataset.customId);
     expect(div.dataset.isImportant).toBe(String(dataset.isImportant));
     expect(div.getAttribute('data-is-important')).toBe(
-      String(dataset.isImportant)
+      String(dataset.isImportant),
     );
     expect(div.dataset.longPropertyName).toBe(String(dataset.longPropertyName));
     expect(div.getAttribute('data-long-property-name')).toBe(
-      String(dataset.longPropertyName)
+      String(dataset.longPropertyName),
     );
   });
 
@@ -188,27 +180,27 @@ describe('h()', () => {
     [null, undefined, new Map(), new Set()].forEach((arg) => {
       expect(() => html` <div data-label="${arg}"></div> `).toThrowError(
         `Invalid template expression at index 0:\n` +
-          `<div data-label="\${0}"></div>`
+          `<div data-label="\${0}"></div>`,
       );
 
       expect(
         () =>
           html`<div data-label="${'something'}"></div>
-            <div data-label="${arg}"></div>`
+            <div data-label="${arg}"></div>`,
       ).toThrowError(
-        `Invalid template expression at index 1:\n<div data-label="\${0}"></div><div data-label="\${1}"></div>`
+        `Invalid template expression at index 1:\n<div data-label="\${0}"></div><div data-label="\${1}"></div>`,
       );
 
       expect(() => html`<div>${arg}</div> `).toThrowError(
-        'Invalid template expression at index 0'
+        'Invalid template expression at index 0',
       );
 
       expect(
         () =>
           html`<div data-label="${'something'}"></div>
-            <div>${arg}</div>`
+            <div>${arg}</div>`,
       ).toThrowError(
-        `Invalid template expression at index 1:\n<div data-label="\${0}"></div><div>\${1}</div>`
+        `Invalid template expression at index 1:\n<div data-label="\${0}"></div><div>\${1}</div>`,
       );
     });
   });
@@ -219,28 +211,28 @@ describe('h()', () => {
       'have occurred because the previous expression was mismatched\n';
 
     expect(() => html`<div id="${new Text('something')}"></div>`).toThrowError(
-      `${prefix}\n<div id="\${0}"></div>`
+      `${prefix}\n<div id="\${0}"></div>`,
     );
 
     expect(
-      () => html`<div id="${{ dataset: { label: 'something' } }}"></div> `
+      () => html`<div id="${{ dataset: { label: 'something' } }}"></div> `,
     ).toThrowError(
-      'Unexpected template argument at position 0 (zero-based numbering)'
+      'Unexpected template argument at position 0 (zero-based numbering)',
     );
 
     expect(
-      () => html`<div>${{ dataset: { label: 'something' } }}</div> `
+      () => html`<div>${{ dataset: { label: 'something' } }}</div> `,
     ).toThrowError(
-      'Unexpected template argument at position 0 (zero-based numbering)'
+      'Unexpected template argument at position 0 (zero-based numbering)',
     );
 
     expect(
       () => html`
         <div data-index="${1}">${{ dataset: { label: 'something' } }}</div>
         <button data-index="${2}">${{ type: 'button' }}</button>
-      `
+      `,
     ).toThrowError(
-      'Unexpected template argument at position 1 (zero-based numbering)'
+      'Unexpected template argument at position 1 (zero-based numbering)',
     );
   });
 
@@ -262,13 +254,11 @@ describe('h()', () => {
     };
     const btn = html`<button ${btnProps}>Submit</button>`.$node;
 
-    expect(
-      html`
-        <form>
-          <div>${input1} ${input2} ${input3} ${input4}</div>
-          <div>${btn}</div>
-        </form>
-      `.$node
-    ).toMatchSnapshot();
+    expect(html`
+      <form>
+        <div>${input1} ${input2} ${input3} ${input4}</div>
+        <div>${btn}</div>
+      </form>
+    `.$node).toMatchSnapshot();
   });
 });
