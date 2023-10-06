@@ -7,6 +7,8 @@ module.exports = {
     'jest.config.js',
     'babel.config.js',
     'build.js',
+    'demo/',
+    'demo-dist',
     'dist/',
     '*.test.js',
   ],
