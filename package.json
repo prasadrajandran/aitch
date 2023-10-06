@@ -1,6 +1,6 @@
 {
   "name": "@prsd/aitch",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "description": "HTML templating in JavaScript",
   "keywords": [
     "html",
@@ -20,16 +20,14 @@
   },
   "license": "MIT",
   "author": "Prasad Rajandran",
-  "main": "dist/index.js",
-  "files": [
-    "dist/",
-    "README.md"
-  ],
+  "main": "index.js",
   "scripts": {
     "build": "npm install && npm run prettier-fix && npm run eslint && npm run check-types && npm run build-src && npm run build-dts && npm test",
     "build-dts": "tsc --declaration --emitDeclarationOnly",
     "build-src": "node ./build.js",
     "build-src-watch": "node ./build.js --watch",
+    "build-demo": "esbuild ./demo/index.ts --bundle --outdir=./demo-dist",
+    "build-demo-watch": "npm run build-demo -- --watch",
     "check-types": "tsc --noEmit",
     "eslint": "eslint .",
     "prettier-fix": "prettier . --write",
@@ -39,6 +37,7 @@
   "devDependencies": {
     "@babel/core": "^7.19.3",
     "@babel/preset-env": "^7.19.3",
+    "@babel/preset-typescript": "^7.23.0",
     "@tsconfig/strictest": "^1.0.2",
     "@types/jest": "^29.1.2",
     "@typescript-eslint/eslint-plugin": "^5.39.0",
