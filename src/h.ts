@@ -62,7 +62,7 @@ export type TemplateDirectiveExp = ReturnType<
 
 export type TemplateCallbackRef<
   NODE_TYPE extends HTMLElement = HTMLElement,
-  PARSED_TEMPLATE extends ParsedTemplate<unknown> = ParsedTemplate
+  PARSED_TEMPLATE extends ParsedTemplate = ParsedTemplate
 > = ElementRef<NODE_TYPE> & { tpl: PARSED_TEMPLATE };
 
 /**
@@ -79,7 +79,7 @@ export type TemplateCallbackRef<
  */
 export type TemplateCallbackExp<
   NODE_TYPE extends HTMLElement = HTMLElement,
-  PARSED_TEMPLATE extends ParsedTemplate<unknown> = ParsedTemplate
+  PARSED_TEMPLATE extends ParsedTemplate = ParsedTemplate
 > = (ref: TemplateCallbackRef<NODE_TYPE, PARSED_TEMPLATE>) => unknown;
 
 /**
