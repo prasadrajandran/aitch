@@ -1,12 +1,14 @@
+const { mkdirSync, existsSync, rmSync, cpSync } = require('fs');
+const { resolve: resolvePath } = require('path');
 const esbuild = require('esbuild');
-const path = require('path');
 
 const watch = process.argv[2] === '--watch';
-const srcDir = path.resolve(__dirname, 'src');
-const distDir = path.resolve(__dirname, 'dist');
+const rootDir = __dirname;
+const srcDir = resolvePath(rootDir, 'src');
+const distDir = resolvePath(rootDir, 'dist');
 const entryPoints = [
-  path.resolve(srcDir, 'index.ts'),
-  path.resolve(srcDir, 'directives.ts'),
+  resolvePath(srcDir, 'index.ts'),
+  resolvePath(srcDir, 'directives.ts'),
 ];
 const buildOptions = {
   entryPoints,
@@ -17,8 +19,18 @@ const buildOptions = {
   format: 'esm',
   platform: 'browser',
 };
+const packageFiles = ['LICENSE', 'README.md', 'package.json'];
 
 (async () => {
+  if (existsSync(distDir)) {
+    rmSync(distDir, { recursive: true });
+    mkdirSync(distDir);
+  }
+
+  packageFiles.forEach((file) => {
+    cpSync(resolvePath(rootDir, file), resolvePath(distDir, file));
+  });
+
   if (watch) {
     const ctx = await esbuild.context(buildOptions);
     await ctx.watch();
