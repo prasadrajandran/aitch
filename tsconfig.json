@@ -6,6 +6,5 @@
     "outDir": "dist",
     "ignoreDeprecations": "5.0"
   },
-  "include": ["src/**/*"],
-  "exclude": ["src/**/*.test.js"]
+  "include": ["src/**/*"]
 }
