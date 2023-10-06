@@ -1,15 +1,10 @@
 /**
- * Determines if the supplied `arg` is a valid TemplateDirective value.
+ * Is `exp` a template directive?
  * @internal
- * @param arg Arg to check.
+ * @param exp Expression to check.
  */
-export declare const isDirective: (arg: unknown) => arg is {
-    directive: string;
-    identifier: symbol;
-    definition: {
-        key: string;
-        type: "attr" | "node";
-        callback: (instances: import("./create-directive").DirectiveInstance<unknown[], Node>[]) => unknown;
-    };
+export declare const isDirective: (exp: unknown) => exp is {
+    id: string;
+    def: import("./create-directive").DirectiveDefinition<unknown[], HTMLElement>;
     args: unknown[];
 };

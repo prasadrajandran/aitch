@@ -1,30 +1,62 @@
-import type { TemplateArgIndex } from '../h';
-export type DirectiveIdentifier = symbol;
-export type DirectiveCallbackResultKey = string;
-export type TemplateDirective = ReturnType<typeof createDirective>;
-export declare const directiveId = "9554857d-de86-490c-b840-97c0b09ec272";
-export interface DirectiveInstance<DIRECTIVE_ARGS extends unknown[] = unknown[], DIRECTIVE_NODE extends Node = Element> {
+import type { ParsedTemplate, TemplateExpIndex } from '../h';
+/**
+ * Return values of template directives.
+ * @internal
+ */
+export type TemplateDirectiveResults<K = unknown, V = unknown> = Record<keyof K, V>;
+/**
+ * An instance of a directive template expression.
+ * @internal
+ */
+export interface DirectiveInstance<DIRECTIVE_ARGS extends unknown[] = unknown[], DIRECTIVE_NODE extends HTMLElement = HTMLElement> {
+    /**
+     * Node that the directive is attached to.
+     *
+     * Note: If this is a "node" type directive, it will be attached to a
+     * "template" element that serves as a placeholder.
+     */
     node: DIRECTIVE_NODE;
-    pos: TemplateArgIndex;
+    /**
+     * Index position of the directive instance.
+     */
+    index: TemplateExpIndex;
+    /**
+     * Arguments provided to the directive.
+     */
     args: DIRECTIVE_ARGS;
 }
-export interface DirectiveDefinition<DIRECTIVE_KEY extends DirectiveCallbackResultKey, DIRECTIVE_ARGS extends unknown[], DIRECTIVE_RESULT, DIRECTIVE_NODE extends Node> {
+/**
+ * Directive definition.
+ * @internal
+ */
+export interface DirectiveDefinition<DIRECTIVE_ARGS extends unknown[], DIRECTIVE_NODE extends HTMLElement = HTMLElement> {
+    /**
+     * Directive type:
+     * "attr" - Directive must be attached to an element and it modifies the
+     *          element it is attached to.
+     * "node" - Directive produces a node or template.
+     */
     type: 'attr' | 'node';
-    key?: DIRECTIVE_KEY;
-    callback: (instances: DirectiveInstance<DIRECTIVE_ARGS, DIRECTIVE_NODE>[]) => DIRECTIVE_RESULT;
+    /**
+     * Directive's callback that processes the provided arguments.
+     * @param template Template that the directive belongs to.
+     * @param instances All instances of the same directive.
+     */
+    callback: (template: ParsedTemplate<unknown>, instances: DirectiveInstance<DIRECTIVE_ARGS, DIRECTIVE_NODE>[]) => void;
 }
+/**
+ * Property that identifies an object as an instance of a template directive
+ * expression.
+ * @internal
+ */
+export declare const directiveId = "__cI4Mp6yr0__";
 /**
  * Create a template directive.
  * @internal
- * @param definition Directive definition.
+ * @param definition Template directive definition.
  */
-export declare const createDirective: <DIRECTIVE_KEY extends string = "", DIRECTIVE_ARGS extends unknown[] = unknown[], DIRECTIVE_RESULT = void, DIRECTIVE_NODE extends Node = Element>(definition: DirectiveDefinition<DIRECTIVE_KEY, DIRECTIVE_ARGS, DIRECTIVE_RESULT, DIRECTIVE_NODE>) => (...args: DIRECTIVE_ARGS) => {
-    directive: string;
-    identifier: symbol;
-    definition: {
-        key: string | DIRECTIVE_KEY;
-        type: 'attr' | 'node';
-        callback: (instances: DirectiveInstance<DIRECTIVE_ARGS, DIRECTIVE_NODE>[]) => DIRECTIVE_RESULT;
-    };
+export declare const createDirective: <DIRECTIVE_ARGS extends unknown[] = unknown[], DIRECTIVE_NODE extends HTMLElement = HTMLElement>(def: DirectiveDefinition<DIRECTIVE_ARGS, DIRECTIVE_NODE>) => (...args: DIRECTIVE_ARGS) => {
+    id: string;
+    def: DirectiveDefinition<DIRECTIVE_ARGS, DIRECTIVE_NODE>;
     args: DIRECTIVE_ARGS;
 };
