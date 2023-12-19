@@ -28,12 +28,12 @@ export type FnDirective<FUNCTION_NAMES extends Record<FunctionName, FunctionBody
  *   </div>
  * `;
  *
- * Note: the first argument is a TemplateCallbackRef and that is supplied and
- * bounded automatically by the template parser - all additional arguments
- * are defined in the template.
- *
  * tpl.updateBgColor('red');
  *
+ * Note: the second argument is a TemplateCallbackRef and that is supplied and
+ * bounded automatically by the template parser - all additional arguments
+ * are defined in the template. So in the example above, the only argument that
+ * would have to be supplied when the function is called is `backgroundColor`
  */
 export declare const _fn: (args_0: string, args_1: (ref: TemplateCallbackRef, ...args: never[]) => unknown) => {
     id: string;

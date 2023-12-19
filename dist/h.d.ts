@@ -64,13 +64,12 @@ type TemplateExps = string | number | boolean | Node | TemplateAttrsExp | Templa
  */
 export type TemplateExpIndex = number;
 /**
- * A map of the index position of a template expression to the template
- * expression itself.
+ * A map of template expression index position to template expression.
  * @internal
  */
 type TaggedExpMap = Map<TemplateExpIndex, Node | TemplateCallbackExp | TemplateAttrsExp | TemplateDirectiveExp>;
 /**
- * A node with additional utility functions.
+ * A wrapper around an HTML element that provides additional utility functions.
  */
 export type ElementRef<NODE extends HTMLElement = HTMLElement> = ReturnType<typeof createRef<NODE>>;
 /**
@@ -87,6 +86,10 @@ declare class TemplateCallbackSet extends Set<() => unknown> {
      * Execute all callbacks.
      */
     run(): void;
+    /**
+     * Execute all callbacks inside "requestAnimationFrame"
+     */
+    runAsync(): void;
 }
 /**
  * Tags all expressions in a template.

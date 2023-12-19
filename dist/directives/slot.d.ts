@@ -8,7 +8,13 @@ type SlotName = string;
  */
 export type SlotDirective<SLOT_NAME extends SlotName> = Record<SLOT_NAME, Node>;
 /**
- * Creates a
+ * Creates a slot that can be replaced with other content.
+ *
+ * Example:
+ * const tpl = html`
+ *   <div>${_slot('badge')}</div>
+ * `;
+ * tpl.badge = document.createElement('span');
  */
 export declare const _slot: (args_0: string) => {
     id: string;

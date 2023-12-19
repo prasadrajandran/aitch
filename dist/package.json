@@ -42,7 +42,7 @@
     "@types/jest": "^29.1.2",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
-    "@web/dev-server": "^0.3.2",
+    "@web/dev-server": "^0.4.1",
     "babel-jest": "^29.1.2",
     "esbuild": "^0.19.4",
     "eslint": "^8.25.0",
