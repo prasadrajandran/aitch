@@ -127,8 +127,7 @@ type TaggedNodeExp = string;
 export type TemplateExpIndex = number;
 
 /**
- * A map of the index position of a template expression to the template
- * expression itself.
+ * A map of template expression index position to template expression.
  * @internal
  */
 type TaggedExpMap = Map<
@@ -137,7 +136,7 @@ type TaggedExpMap = Map<
 >;
 
 /**
- * A node with additional utility functions.
+ * A wrapper around an HTML element that provides additional utility functions.
  */
 export type ElementRef<NODE extends HTMLElement = HTMLElement> = ReturnType<
   typeof createRef<NODE>
@@ -153,7 +152,7 @@ export const parsedTemplateId = '__PzroJBb1g__';
  * Tags an "attributes" template expression for interpolation.
  *
  * @internal
- * @param i Expression index position.
+ * @param i Template expression index position.
  */
 const tagAttrsExp = (i: TemplateExpIndex): TaggedTemplateAttrsExp =>
   `data-FHF7Sj5kD1S-${i}`;
@@ -161,7 +160,7 @@ const tagAttrsExp = (i: TemplateExpIndex): TaggedTemplateAttrsExp =>
 /**
  * Tags a "node" template expression for interpolation.
  * @internal
- * @param i Expression index position.
+ * @param i Template expression index position.
  */
 const tagNodeExp = (i: TemplateExpIndex): TaggedNodeExp =>
   `<template ${tagAttrsExp(i)}></template>`;
@@ -180,6 +179,13 @@ class TemplateCallbackSet extends Set<() => unknown> {
         this.delete(callback);
       }
     });
+  }
+
+  /**
+   * Execute all callbacks inside "requestAnimationFrame"
+   */
+  runAsync() {
+    window.requestAnimationFrame(() => this.run());
   }
 }
 
@@ -316,7 +322,7 @@ const interpolate = <
       console.error(template);
       throw new Error(
         `Unable to interpolate expression at index ${expIndex}. ` +
-          `This could have occurred because the previous expression was ` +
+          `This could also have occurred because some prior expression was ` +
           `mismatched.\n${createErrorTemplate()}`,
       );
     }
