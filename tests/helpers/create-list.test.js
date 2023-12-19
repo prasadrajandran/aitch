@@ -12,10 +12,10 @@ const shallowCopyItems = (items) => {
   return items instanceof Map
     ? new Map(items)
     : items instanceof Set
-    ? new Set(items)
-    : Array.isArray(items)
-    ? [...items]
-    : { ...items };
+      ? new Set(items)
+      : Array.isArray(items)
+        ? [...items]
+        : { ...items };
 };
 
 const removeItem = (items, ...itemsToDelete) => {

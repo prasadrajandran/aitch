@@ -108,10 +108,10 @@ export const createList = <ITEM, NODE extends ListNode>({
   const entries = Array.isArray(items)
     ? items.entries()
     : items instanceof Map
-    ? items
-    : items instanceof Set
-    ? Array.from(items).entries()
-    : Object.entries(items);
+      ? items
+      : items instanceof Set
+        ? Array.from(items).entries()
+        : Object.entries(items);
 
   // TODO: must create tests for checking that items are appended in the right order
 
